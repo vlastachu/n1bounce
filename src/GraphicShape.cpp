@@ -3,6 +3,7 @@
 #include <math.h>
 
 GraphicShape::GraphicShape(){}
+GraphicShape::~GraphicShape(){}
 
 float GraphicShape::radian(float a) {
 	return a / 180 * PI;

@@ -12,16 +12,13 @@ class Engine
 private:
 Map map;
 Ball ball;
-
+Engine();
+Engine(const Engine& root);
+Engine& operator=(const Engine&);
 public:
-void reshape(int w, int h);
-void motion(int X,int Y);
-void mouse(int button, int state, int x, int y);
-void display();
-void TimerFunction(int value);
-void keyPressed (unsigned char key, int x, int y);
-
-
-	Engine(int argc, char * argv[]);
-	void play();
+Ball getBall(){
+	return ball;
+}
+static Engine& Instance();
+void play();
 };
