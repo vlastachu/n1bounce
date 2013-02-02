@@ -27,5 +27,6 @@ void Engine::play()
 	if(ball.gety() >= DEAD_LINE)
 	{
 		std::cout << "GAME OVER! Try again.\n";
+		exit(0);
 	}
 }

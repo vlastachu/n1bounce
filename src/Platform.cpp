@@ -17,10 +17,17 @@ Platform::Platform()
 	w=100;
 	h=30;
 }
-Platform::Platform(int height, int width)
+Platform::Platform(int Y, int width)
 {
 	x=WIDTH;
-	y=HEIGHT-height;
+	y=HEIGHT-Y;
+	w=width;
+	h=30;
+}
+Platform::Platform(int Y, int width, int X)
+{
+	x=X;
+	y=HEIGHT-Y;
 	w=width;
 	h=30;
 }

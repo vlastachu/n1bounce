@@ -20,6 +20,7 @@ void Map::init()
 {
 	speed = MAP_SPEED;
 	dist = 0;
+	shapes.push_back(new Platform(60,WIDTH,0));
 }
 
 void Map::move()
