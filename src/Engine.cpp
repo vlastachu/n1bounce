@@ -8,7 +8,6 @@ Engine::Engine()
 	
 	map.init();
 	ball.init();
-
 }
 
 Engine& Engine::Instance()

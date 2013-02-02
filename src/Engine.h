@@ -16,8 +16,8 @@ Engine();
 Engine(const Engine& root);
 Engine& operator=(const Engine&);
 public:
-Ball getBall(){
-	return ball;
+Ball* getBall(){
+	return &ball;
 }
 static Engine& Instance();
 void play();

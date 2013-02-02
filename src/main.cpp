@@ -36,7 +36,7 @@ void keyPressed (unsigned char key, int x, int y)
 {  
 	if(key==GLUT_KEY_UP)
 	{
-		Engine::Instance().getBall().jump();
+		Engine::Instance().getBall()->jump();
 	std::cout << "11";
 	}
 }
@@ -55,7 +55,6 @@ int main (int argc, char * argv[])
 	glutMouseFunc(mouse);
 	glutPassiveMotionFunc(motion);
 	glutKeyboardFunc(keyPressed);
-	std::cout << "11";
 	Engine::Instance();
 	
 	glutMainLoop();
