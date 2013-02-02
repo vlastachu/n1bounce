@@ -6,5 +6,6 @@ class Platform: public FixedMapShape
 public:
 	void draw(); //overrided
 	Platform();
+	Platform(int height, int width);
 	~Platform(){}
 };

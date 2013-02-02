@@ -17,5 +17,5 @@ public:
 	Map();
 	void draw();
 	void init();
-	void move(Ball ball);
+	void move();
 };

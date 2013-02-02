@@ -5,6 +5,7 @@
 #define HEIGHT 600
 #define BALLX 100
 #define MAP_SPEED 10
+#define DEAD_LINE HEIGHT-30
 
 void reshape(int w, int h);
 void motion(int X,int Y);

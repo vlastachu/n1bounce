@@ -2,6 +2,7 @@
 #include "Map.h"
 #include "Ball.h"
 #include "defs.h"
+#include <iostream>
 
 Engine::Engine()
 {
@@ -18,8 +19,13 @@ Engine& Engine::Instance()
 
 void Engine::play()
 {
-	map.move(ball);
+	map.move();
 	map.draw();
 	ball.move();
 	ball.draw();
+
+	if(ball.gety() >= DEAD_LINE)
+	{
+		std::cout << "GAME OVER! Try again.\n";
+	}
 }

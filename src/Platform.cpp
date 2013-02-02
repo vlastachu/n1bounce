@@ -10,12 +10,17 @@ void Platform::draw()
 		glVertex2f(x,y+h);
 	glEnd();
 }
-
-
 Platform::Platform()
 {
 	x=WIDTH;
 	y=500;
 	w=100;
+	h=30;
+}
+Platform::Platform(int height, int width)
+{
+	x=WIDTH;
+	y=HEIGHT-height;
+	w=width;
 	h=30;
 }

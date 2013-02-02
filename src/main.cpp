@@ -37,7 +37,6 @@ void keyPressed (unsigned char key, int x, int y)
 	if(key==GLUT_KEY_UP)
 	{
 		Engine::Instance().getBall()->jump();
-	std::cout << "11";
 	}
 }
 
