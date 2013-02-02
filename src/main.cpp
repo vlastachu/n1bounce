@@ -2,7 +2,7 @@
 using namespace std;
 #include "defs.h"
 #include "Engine.h"
-
+#include <time.h>
 
 void reshape(int w, int h)
 {
@@ -19,7 +19,6 @@ void mouse(int button, int state, int x, int y)
 
 void TimerFunction(int value)
 {
-	
     glutPostRedisplay();
     glutTimerFunc(30,TimerFunction, 1);
 }
@@ -44,6 +43,7 @@ void keyPressed (unsigned char key, int x, int y)
 
 int main (int argc, char * argv[])
 {
+	srand ( time(NULL) );
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGB);
 	glutInitWindowSize(WIDTH, HEIGHT);

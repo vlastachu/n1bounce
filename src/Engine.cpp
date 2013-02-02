@@ -19,7 +19,9 @@ Engine& Engine::Instance()
 
 void Engine::gameOver(){
 		std::cout << "GAME OVER! Try again.\n";
-		exit(0);
+		map.clear();
+		map.init();
+		ball.init();
 }
 
 void Engine::play()

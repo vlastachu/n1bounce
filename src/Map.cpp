@@ -22,18 +22,22 @@ void Map::init()
 	dist = 0;
 	platforms.push_back(new Platform(60,WIDTH,0));
 	shapes.push_back(platforms.back());
+	randY = 70 + rand()%120;
+	randW = 100 + rand()%150;	
 }
 
 void Map::move()
 {
-	if(dist==20)  // add new platform if distance from the last is 20
+	if(dist == PLATFORM_DISTANCE)  // add new platform if distance from the last is /15/
 	{
-		int randY = 100 + rand()%150;
-		int randW = 100 + rand()%100;
+		randY = randY - 60 + rand()%120;
+		if(randY < (HEIGHT - DEAD_LINE + 10)) randY = HEIGHT - DEAD_LINE + 15;
+		if(randY > 400) randY = 350;
+		randW = 100 + rand()%150;
 		platforms.push_back(new Platform(randY, randW));
 		shapes.push_back(platforms.back());
 		dist=0;
-		if(!(rand() % TRAP_CHANSE)){
+		if(!(rand() % TRAP_CHANSE)){  // add trap on platform
 			traps.push_back(new Trap(randY,WIDTH + rand()%(randW - 30))); // 30 is width of trap
 			shapes.push_back(traps.back());
 		}
@@ -44,7 +48,8 @@ void Map::move()
 	{
 		if((shapes.front()->getx() + shapes.front()->getw()) < 0)
 		{
-			shapes.erase(shapes.begin());
+			shapes.erase(shapes.begin());// also delete here null pointers from platforms and traps
+			//and delete objects in pointers
 		}
 	}
 
@@ -62,4 +67,10 @@ std::vector<Platform*> Map::getPlatforms()
 std::vector<Trap*> Map::getTraps()
 {
 	return traps;
+}
+
+void Map::clear(){
+	shapes.clear();
+	platforms.clear();
+	traps.clear();
 }

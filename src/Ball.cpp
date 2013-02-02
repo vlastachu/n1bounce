@@ -16,6 +16,8 @@ void Ball::setborder(float Y)
 
 void Ball::init()
 {
+	x       = BALLX;
+	y       = 500;
 	r       = 20;
 	dy      = 0;
 	jmp     = false;
