@@ -19,7 +19,7 @@ void Ball::init()
 	r       = 20;
 	dy      = 0;
 	jmp     = false;
-	impulse = 20;
+	impulse = 16;
 	setborder(500);
 }
 

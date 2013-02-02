@@ -15,6 +15,7 @@ Ball ball;
 Engine();
 Engine(const Engine& root);
 Engine& operator=(const Engine&);
+void gameOver();
 public:
 Ball* getBall(){
 	return &ball;

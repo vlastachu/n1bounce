@@ -3,6 +3,8 @@
 #include "FixedMapShape.h"
 #include "defs.h"
 #include "Ball.h"
+#include "Platform.h"
+#include "Trap.h"
 /*
 Platforms before;
 Contains FixedMapShape objects and provides control for their movement
@@ -11,6 +13,8 @@ Contains FixedMapShape objects and provides control for their movement
 class Map
 {
 	std::vector<FixedMapShape*> shapes;
+	std::vector<Platform*> platforms;
+	std::vector<Trap*> traps;
 	float speed;
 	int dist;
 public:
@@ -18,4 +22,7 @@ public:
 	void draw();
 	void init();
 	void move();
+	std::vector<Platform*> getPlatforms();
+	std::vector<Trap*> getTraps();
+
 };

@@ -6,7 +6,7 @@
 #define BALLX 100
 #define MAP_SPEED 10
 #define DEAD_LINE HEIGHT-30
-
+#define TRAP_CHANSE 4
 void reshape(int w, int h);
 void motion(int X,int Y);
 void mouse(int button, int state, int x, int y);
