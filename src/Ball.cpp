@@ -36,12 +36,12 @@ void Ball::jump()
 
 void Ball::move()
 {
-	if(!(y >= yborder && y < yborder + 30)||jmp) //чтобы можно было сбоку заехать на платформу
+	if(!(y >= yborder && y < yborder + 10) || jmp) //чтобы можно было сбоку заехать на платформу
 	{
 		y -= dy;
 		dy--;
 	}
-	if(y >= yborder && y < yborder + 30)
+	if(y >= yborder && y < yborder + 10)
 	{
 			y   = yborder;
 			dy  = 0;

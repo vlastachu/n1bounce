@@ -1,5 +1,5 @@
 #pragma once
-#include <vector>
+#include <list>
 #include "FixedMapShape.h"
 #include "defs.h"
 #include "Ball.h"
@@ -12,10 +12,10 @@ Contains FixedMapShape objects and provides control for their movement
 
 class Map
 {
-	int randW, randY;
-	std::vector<FixedMapShape*> shapes;
-	std::vector<Platform*> platforms;
-	std::vector<Trap*> traps;
+	int randW, randY, directionY, deltaY;
+	std::list<FixedMapShape*> shapes;
+	std::list<Platform*> platforms;
+	std::list<Trap*> traps;
 	float speed;
 	int dist;
 public:
@@ -24,7 +24,7 @@ public:
 	void init();
 	void move();
 	void clear();
-	std::vector<Platform*> getPlatforms();
-	std::vector<Trap*> getTraps();
+	std::list<Platform*> getPlatforms();
+	std::list<Trap*> getTraps();
 
 };

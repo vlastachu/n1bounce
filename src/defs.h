@@ -5,9 +5,9 @@
 #define HEIGHT 600
 #define BALLX 100
 #define MAP_SPEED 10
-#define DEAD_LINE HEIGHT-30
+//#define DEAD_LINE HEIGHT-30  now HEIGHT is deadline
 #define TRAP_CHANSE 4
-#define PLATFORM_DISTANCE 15
+#define PLATFORM_DISTANCE 35
 void reshape(int w, int h);
 void motion(int X,int Y);
 void mouse(int button, int state, int x, int y);
