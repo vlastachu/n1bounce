@@ -46,7 +46,10 @@ void Engine::play()
 		if(trap->getx() < ball.getx() && trap->getx() + trap->getw() > ball.getx()
 			&& trap->gety() - trap->geth() < ball.gety() && trap->gety() > ball.gety())
 			{
+				std::cout<<Tr.size()<<"\n";
+				std::cout<<map.getShapes().size();
 				gameOver("trap");
+				
 			}
 	}
 	

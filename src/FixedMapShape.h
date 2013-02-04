@@ -10,5 +10,5 @@ public:
 	virtual void move(float dx);
 	float getw();
 	float geth();
-
+	~FixedMapShape(){};
 };

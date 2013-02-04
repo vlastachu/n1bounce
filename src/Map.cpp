@@ -74,6 +74,11 @@ std::list<Trap*> Map::getTraps()
 	return traps;
 }
 
+std::list<FixedMapShape*> Map::getShapes()
+{
+	return shapes;
+}
+
 void Map::clear(){
 	for(std::list<FixedMapShape*>::iterator it = shapes.begin(); it != shapes.end(); it++){
 		delete *it;//hahaha

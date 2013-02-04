@@ -26,5 +26,5 @@ public:
 	void clear();
 	std::list<Platform*> getPlatforms();
 	std::list<Trap*> getTraps();
-
+	std::list<FixedMapShape*> getShapes();
 };
