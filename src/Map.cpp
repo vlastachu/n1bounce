@@ -10,9 +10,9 @@ Map::Map()
 
 void Map::draw()
 {
-	for(auto shape : shapes)
+	for(std::list<FixedMapShape*>::iterator it = shapes.begin(); it != shapes.end(); it++)
 	{
-		shape->draw();
+		(*it)->draw();
 	}
 }
 
@@ -75,8 +75,8 @@ std::list<Trap*> Map::getTraps()
 }
 
 void Map::clear(){
-	for(auto shape : shapes){
-		delete shape;
+	for(std::list<FixedMapShape*>::iterator it = shapes.begin(); it != shapes.end(); it++){
+		delete *it;//hahaha
 	}
 	shapes.clear();
 	platforms.clear();
