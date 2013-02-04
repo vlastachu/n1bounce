@@ -57,10 +57,11 @@ void Map::move()
 		}
 	}
 
-	for(auto shape : shapes)
-	{
-		shape->move(speed); 
+	for(std::list<FixedMapShape*>::iterator it = shapes.begin(); it != shapes.end(); it++){
+		(*it)->move(speed);
 	}
+	
+
 }
 
 std::list<Platform*> Map::getPlatforms()

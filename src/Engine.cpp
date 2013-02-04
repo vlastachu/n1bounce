@@ -30,14 +30,19 @@ void Engine::play()
 	ball.move();
 	ball.draw();
 
-	ball.setborder(HEIGHT+1); 
-	for(auto platform : map.getPlatforms()){
+	ball.setborder(HEIGHT + 1); 
+	std::list<Platform*> Plat = map.getPlatforms();
+	for(std::list<Platform*>::iterator it = Plat.begin(); it != Plat.end(); it++){
+		Platform* platform = *it;
 		if(platform->getx()-7 < ball.getx() && platform->getx() + platform->getw() > ball.getx()) //laa'ag
 		{
 			ball.setborder(platform->gety());
 		}
 	}
-	for(auto trap : map.getTraps()){
+
+	std::list<Trap*> Tr = map.getTraps();
+	for(std::list<Trap*>::iterator it = Tr.begin(); it != Tr.end(); it++){
+		Trap* trap = *it;
 		if(trap->getx() < ball.getx() && trap->getx() + trap->getw() > ball.getx()
 			&& trap->gety() - trap->geth() < ball.gety() && trap->gety() > ball.gety())
 			{
