@@ -30,7 +30,7 @@ void Engine::play()
 	ball.move();
 	ball.draw();
 
-	ball.setborder(HEIGHT); 
+	ball.setborder(HEIGHT+1); 
 	for(auto platform : map.getPlatforms()){
 		if(platform->getx()-7 < ball.getx() && platform->getx() + platform->getw() > ball.getx()) //laa'ag
 		{

@@ -41,7 +41,7 @@ void Ball::move()
 		y -= dy;
 		dy--;
 	}
-	if(y >= yborder && y < yborder + 10)
+	if(y >= yborder + dy && y < yborder + 10)
 	{
 			y   = yborder;
 			dy  = 0;
