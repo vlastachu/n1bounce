@@ -5,7 +5,7 @@
 class Ball: public GraphicShape
 {
 	float r, dy, yborder;
-	bool jmp;
+	int jmp;// change to enum {none,jumped,dbljumped}
 	int impulse;
 public:
 	Ball(); //TODO: think about it

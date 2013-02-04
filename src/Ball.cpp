@@ -27,10 +27,10 @@ void Ball::init()
 
 void Ball::jump()
 {
-	if(!jmp)
+	if(jmp < 2)
 	{
 		dy=impulse;
-		jmp=true;
+		jmp++;
 	}
 }
 
@@ -45,7 +45,7 @@ void Ball::move()
 	{
 			y   = yborder;
 			dy  = 0;
-			jmp = false;
+			jmp = 0;
 	}
 }
 
