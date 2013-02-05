@@ -12,6 +12,7 @@ void Trap::draw()
 
 Trap::Trap(int Y, int X)
 {
+	u=0;
 	x=X;
 	y=HEIGHT-Y;
 	w=30;

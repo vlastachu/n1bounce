@@ -8,6 +8,7 @@ class Ball: public GraphicShape
 	int jmp;// change to enum {none,jumped,dbljumped}
 	int impulse;
 public:
+	virtual void keyPressed (unsigned char key);
 	Ball(); //TODO: think about it
 
 	void setborder(float Y);
