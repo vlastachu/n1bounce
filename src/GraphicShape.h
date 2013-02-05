@@ -9,6 +9,7 @@ protected:
 public:
 	GraphicShape();
 	virtual void draw() = 0;
+	virtual void keyPressed (unsigned char key)=0;
 	float getx();
 	float gety();
 	virtual ~GraphicShape();

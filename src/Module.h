@@ -1,5 +1,6 @@
 #pragma once
 #include "ModuleManager.h"
+class ModuleManager;
 class Module
 {
 protected:

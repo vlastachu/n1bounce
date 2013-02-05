@@ -7,6 +7,7 @@
 #define string std::string
 #define map std::map
 #define vector std::vector
+class Module;
 class ModuleManager
 {
 	map<string,Module*> allModules;

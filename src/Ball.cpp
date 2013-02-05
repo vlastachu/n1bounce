@@ -9,6 +9,14 @@ Ball::Ball()
 
 }
 
+void Ball::keyPressed(unsigned char key)
+{
+	if(key=='e')
+	{
+		jump();
+	}
+}
+
 void Ball::setborder(float Y)
 {
 	yborder = Y - r;
