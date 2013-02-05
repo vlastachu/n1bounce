@@ -19,8 +19,7 @@ void Map::init()
 {
 	speed = MAP_SPEED;
 	dist = 20;
-	platforms.push_back(new Platform(60,WIDTH+40,0));
-	shapes.push_back(platforms.back());
+	shapes.push_back(new Platform(60,WIDTH+40,0));
 	randY = 30;
 	randW = 100 + rand()%150;	
 }
@@ -35,12 +34,10 @@ void Map::move()
 		else directionY = rand()%3 - 1;
 		randY = randY + directionY * deltaY;
 		randW = 200 + rand()%50;
-		platforms.push_back(new Platform(randY, randW));
-		shapes.push_back(platforms.back());
+		shapes.push_back(new Platform(randY, randW));
 		dist=0;
 		if(!(rand() % TRAP_CHANSE)){  // add trap on platform
-			traps.push_back(new Trap(randY,WIDTH + rand()%(randW - 30))); // 30 is width of trap
-			shapes.push_back(traps.back());
+			shapes.push_back(new Trap(randY,WIDTH + rand()%(randW - 30)));
 		}
 	}
 	dist++;
@@ -51,6 +48,7 @@ void Map::move()
 		{
 			delete shapes.front();
 			shapes.erase(shapes.begin());// also delete here null pointers from platforms and traps
+
 			//and delete objects in pointers
 
 		}
@@ -63,13 +61,24 @@ void Map::move()
 
 }
 
-std::list<Platform*> Map::getPlatforms()
+std::list<FixedMapShape*> Map::getPlatforms()
 {
-	return platforms;
+	std::list<FixedMapShape*> platforms;
+	for(std::list<FixedMapShape*>::iterator it = shapes.begin(); it != shapes.end(); it++){
+		if((*it)->getType() == platform)
+			platforms.push_back((*it));
+	}
+		return platforms;
+	
 }
 
-std::list<Trap*> Map::getTraps()
+std::list<FixedMapShape*> Map::getTraps()
 {
+	std::list<FixedMapShape*> traps;
+	for(std::list<FixedMapShape*>::iterator it = shapes.begin(); it != shapes.end(); it++){
+		if((*it)->getType() == trap)
+			traps.push_back((*it));
+	}
 	return traps;
 }
 
@@ -77,8 +86,5 @@ void Map::clear(){
 	for(std::list<FixedMapShape*>::iterator it = shapes.begin(); it != shapes.end(); it++){
 		delete (*it);
 	}
-	
 	shapes.clear();
-	platforms.clear();
-	traps.clear();
 }

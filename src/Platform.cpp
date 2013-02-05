@@ -1,5 +1,6 @@
 #include "defs.h"
 #include "Platform.h"
+
 void Platform::draw()
 {
 	glColor3f(1.0,0.0,0.0);
@@ -30,4 +31,8 @@ Platform::Platform(int Y, int width, int X)
 	y=HEIGHT-Y;
 	w=width;
 	h=30;
+}
+
+ClassType Platform::getType(){
+	return platform;
 }

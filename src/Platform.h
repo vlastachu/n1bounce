@@ -4,9 +4,10 @@
 class Platform: public FixedMapShape
 {
 public:
-	void draw(); //overrided
+	void draw();  //overrided
 	Platform();
 	Platform(int Y, int width);
 	Platform(int Y, int width, int X);
+	ClassType getType();  //overrided
 	~Platform(){}
 };

@@ -14,3 +14,8 @@ float FixedMapShape::geth()
 {
 	return h;
 }
+
+
+ClassType FixedMapShape::getType(){
+	return fixedMapShape;
+}

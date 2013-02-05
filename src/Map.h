@@ -14,8 +14,6 @@ class Map
 {
 	int randW, randY, directionY, deltaY;
 	std::list<FixedMapShape*> shapes;
-	std::list<Platform*> platforms;
-	std::list<Trap*> traps;
 	float speed;
 	int dist;
 public:
@@ -24,7 +22,7 @@ public:
 	void init();
 	void move();
 	void clear();
-	std::list<Platform*> getPlatforms();
-	std::list<Trap*> getTraps();
+	std::list<FixedMapShape*> getPlatforms();
+	std::list<FixedMapShape*> getTraps();
 
 };

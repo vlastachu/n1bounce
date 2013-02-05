@@ -1,6 +1,5 @@
 #include "defs.h"
 #include "Trap.h"
-
 void Trap::draw()
 {
 	glColor3f(1.0,0.0,0.0);
@@ -17,4 +16,9 @@ Trap::Trap(int Y, int X)
 	y=HEIGHT-Y;
 	w=30;
 	h=30;
+}
+
+
+ClassType Trap::getType(){
+	return trap;
 }
