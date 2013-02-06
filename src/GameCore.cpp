@@ -3,14 +3,15 @@
 #include "Ball.h"
 #include "defs.h"
 #include <iostream>
-#include "EventManager.h"
+//#include "EventManager.h"
 GameCore::GameCore()
 {
 }
 
+
 void GameCore::Init()
 {
-	e_mgr.Add(&ball);
+	//e_mgr.Add(&ball);
 	g_map.init();
 	ball.init();
 }

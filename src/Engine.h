@@ -19,4 +19,8 @@ private:
 public:
 	static Engine& Instance();
 	void play();
+	GameCore* getGame()
+	{
+		return &game;
+	}
 	};
