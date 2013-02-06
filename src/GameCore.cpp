@@ -4,6 +4,7 @@
 #include "defs.h"
 #include <iostream>
 //#include "EventManager.h"
+///coment
 GameCore::GameCore()
 {
 }
