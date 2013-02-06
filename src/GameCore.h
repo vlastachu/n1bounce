@@ -12,12 +12,14 @@ class GameCore:public Module
 {
 	Map g_map;
 	Ball ball;
+	int score;
 	void gameOver(char* also);
 public:
 	GameCore();
 	Ball* getBall(){
 		return &ball;
 	}
+	void glutPrint(float x, float y, void* font, string text);
 	virtual void Init();
 	virtual void Run();
 	virtual void Clear();

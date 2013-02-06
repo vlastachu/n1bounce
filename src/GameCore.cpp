@@ -24,18 +24,35 @@ void GameCore::Clear()
 
 void GameCore::gameOver(char* also){
 		std::cout << "GAME OVER! Try again." << also << "\n";
+		score = 0;
 		g_map.clear();
 		g_map.init();
 		ball.init();
 }
 
+void GameCore::glutPrint(float x, float y, void* font, string text) 
+{ 
+    glRasterPos2f(x,y); 
+    for (int i=0; i<text.size(); i++)
+    {
+        glutBitmapCharacter(font, text[i]);
+    }
+}
 void GameCore::Run()
 {
 	g_map.move();
 	g_map.draw();
 	ball.move();
 	ball.draw();
-
+	
+	//score:
+	score++;
+	string sScore = "score: ";
+	char chScore[10]; itoa(score,chScore,10);
+	sScore+=chScore;
+	glutPrint(800,20,GLUT_BITMAP_TIMES_ROMAN_24,sScore);
+	
+	
 	ball.setborder(HEIGHT + 1); 
 	std::list<FixedMapShape*> Plat = g_map.getPlatforms();
 	for(std::list<FixedMapShape*>::iterator it = Plat.begin(); it != Plat.end(); it++){
