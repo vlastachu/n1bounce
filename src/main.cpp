@@ -56,7 +56,7 @@ int main (int argc, char * argv[])
 	glutMouseFunc(mouse);
 	glutPassiveMotionFunc(motion);
 	glutKeyboardFunc(keyPressed);
-	Engine::Instance();
+	e_mgr.Add(Engine::Instance().getGame()->getBall());
 	
 	glutMainLoop();
 
