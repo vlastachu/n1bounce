@@ -65,9 +65,11 @@
     <ClCompile Include="..\..\..\src\Ball.cpp" />
     <ClCompile Include="..\..\..\src\Engine.cpp" />
     <ClCompile Include="..\..\..\src\FixedMapShape.cpp" />
+    <ClCompile Include="..\..\..\src\GameCore.cpp" />
     <ClCompile Include="..\..\..\src\GraphicShape.cpp" />
     <ClCompile Include="..\..\..\src\main.cpp" />
     <ClCompile Include="..\..\..\src\Map.cpp" />
+    <ClCompile Include="..\..\..\src\ModuleManager.cpp" />
     <ClCompile Include="..\..\..\src\Platform.cpp" />
     <ClCompile Include="..\..\..\src\Trap.cpp" />
   </ItemGroup>
@@ -76,8 +78,11 @@
     <ClInclude Include="..\..\..\src\defs.h" />
     <ClInclude Include="..\..\..\src\Engine.h" />
     <ClInclude Include="..\..\..\src\FixedMapShape.h" />
+    <ClInclude Include="..\..\..\src\GameCore.h" />
     <ClInclude Include="..\..\..\src\GraphicShape.h" />
     <ClInclude Include="..\..\..\src\Map.h" />
+    <ClInclude Include="..\..\..\src\Module.h" />
+    <ClInclude Include="..\..\..\src\ModuleManager.h" />
     <ClInclude Include="..\..\..\src\Platform.h" />
     <ClInclude Include="..\..\..\src\Trap.h" />
   </ItemGroup>

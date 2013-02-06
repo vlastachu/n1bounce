@@ -4,7 +4,8 @@
 class Platform: public FixedMapShape
 {
 public:
-	void draw();  //overrided
+	virtual void keyPressed (unsigned char key){};
+	void draw(); //overrided
 	Platform();
 	Platform(int Y, int width);
 	Platform(int Y, int width, int X);

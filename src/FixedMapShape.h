@@ -8,7 +8,9 @@ protected:
 		float w,h;
 public:
 	virtual void move(float dx);
+	virtual void keyPressed (unsigned char key)=0;
 	float getw();
 	float geth();
 	virtual ClassType getType();
+	~FixedMapShape(){};
 };

@@ -10,7 +10,8 @@ Map::Map()
 
 void Map::draw()
 {
-	for(std::list<FixedMapShape*>::iterator it = shapes.begin(); it != shapes.end(); it++){
+	for(std::list<FixedMapShape*>::iterator it = shapes.begin(); it != shapes.end(); it++)
+	{
 		(*it)->draw();
 	}
 }
@@ -82,9 +83,14 @@ std::list<FixedMapShape*> Map::getTraps()
 	return traps;
 }
 
+std::list<FixedMapShape*> Map::getShapes()
+{
+	return shapes;
+}
+
 void Map::clear(){
 	for(std::list<FixedMapShape*>::iterator it = shapes.begin(); it != shapes.end(); it++){
-		delete (*it);
+		delete *it;//hahaha
 	}
 	shapes.clear();
 }

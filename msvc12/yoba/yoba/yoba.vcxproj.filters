@@ -39,6 +39,12 @@
     <ClCompile Include="..\..\..\src\Trap.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\ModuleManager.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\GameCore.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\Ball.h">
@@ -63,6 +69,15 @@
       <Filter>Файлы исходного кода</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\Trap.h">
+      <Filter>Файлы исходного кода</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Module.h">
+      <Filter>Файлы исходного кода</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\ModuleManager.h">
+      <Filter>Файлы исходного кода</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\GameCore.h">
       <Filter>Файлы исходного кода</Filter>
     </ClInclude>
   </ItemGroup>

@@ -3,6 +3,8 @@ using namespace std;
 #include "defs.h"
 #include "Engine.h"
 #include <time.h>
+#include <vector>
+#include "EventManager.h"
 
 void reshape(int w, int h)
 {
@@ -19,24 +21,24 @@ void mouse(int button, int state, int x, int y)
 
 void TimerFunction(int value)
 {
+	glutTimerFunc(30,TimerFunction, 1);
+	Engine::Instance().play();
     glutPostRedisplay();
-    glutTimerFunc(30,TimerFunction, 1);
+    
 }
 
 void display()
 {
+	glutSwapBuffers();
 	glClear(GL_COLOR_BUFFER_BIT);
 	glClearColor(1.0 ,1.0, 1.0, 0.0);
-	Engine::Instance().play();
-    glutSwapBuffers();
 }
+
+EventManager e_mgr;
 
 void keyPressed (unsigned char key, int x, int y) 
 {  
-	if(key==GLUT_KEY_UP)
-	{
-		Engine::Instance().getBall()->jump();
-	}
+	e_mgr.keyPressed(key);
 }
 
 
