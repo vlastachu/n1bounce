@@ -8,10 +8,6 @@ GameCore::GameCore()
 {
 }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> dee2c20f731c9aa98c7b153d81a252c7226baf43
 void GameCore::Init()
 {
 	//e_mgr.Add(&ball);
