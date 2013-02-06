@@ -11,7 +11,7 @@ Ball::Ball()
 
 void Ball::keyPressed(unsigned char key)
 {
-	if(key=='e')
+	if(key=='w')
 	{
 		jump();
 	}
