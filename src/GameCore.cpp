@@ -14,16 +14,16 @@ GameCore::GameCore()
 	EventManager::Instance().Register(this);
 }
 
-void GameCore::keyPressed(unsigned char key)
+void GameCore::keyPressed(int key)
 {
-	if(key=='w')
+	if(key==GLUT_KEY_UP)
 		man->jump();
-	if(key=='s')
+	if(key==GLUT_KEY_DOWN)
 		man->slide();
-	if(key=='1')
+	/*if(key=='1')
 		scale-=0.1;
 	if(key=='2')
-		speed++;
+		speed++;*/
 }
 
 void GameCore::Init()
@@ -63,7 +63,7 @@ void GameCore::Run()
 	/*ball.move();
 	ball.draw();*/
 	
-	scale=1-(YSCALE_AXIS-man->y)/(HEIGHT*4);
+	scale=1-(YSCALE_AXIS-man->y)/(HEIGHT*2);
 	//score:
 	score++;
 	string sScore = "score: ";

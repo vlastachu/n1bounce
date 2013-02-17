@@ -13,7 +13,7 @@
 
 //#define DEAD_LINE HEIGHT-30  now HEIGHT is deadline
 #define TRAP_CHANSE 4
-#define PLATFORM_DISTANCE 100
+#define PLATFORM_DISTANCE 200
 enum ClassType{fixedMapShape, platform, trap};
 void reshape(int w, int h);
 void motion(int X,int Y);

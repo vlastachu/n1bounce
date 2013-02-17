@@ -37,21 +37,25 @@ void Map::draw()
 
 void Map::init()
 {
+	for(std::list<MapShape*>::iterator it = elements.begin(); it != elements.end(); it++)
+	{
+		delete *it;
+	}
 	elements.clear();
-	//                  TODO: FREE MEM
+	//                                           !!!!             TODO: FREE MEM
 	/*dist = 20;
 	elements.push_back(Element(0,HEIGHT-60,WIDTH,30,1));
 	randY = 30;
 	randW = 100 + rand()%150;	*/
-	elements.push_back(new Platform(0,300,WIDTH));
-	lastX=WIDTH;
+	Platform* p=new Platform(0,500,WIDTH);       //    UNSAFE NULL->x
+	elements.push_back(p);
+	lastPlat=p;
 }
 
 void Map::move()
 {
-	lastX-=parent->speed;
 
-	if(lastX <= WIDTH-PLATFORM_DISTANCE)  // add new platform if distance from the last is /15/
+	if(parent->toX(lastPlat->x + lastPlat->w - PLATFORM_DISTANCE) <= WIDTH)  
 	{
 		/*deltaY = (60 + rand()%100);
 		if(randY + deltaY > 500) directionY = -1;
@@ -59,10 +63,23 @@ void Map::move()
 		else directionY = rand()%3 - 1;
 		randY = randY + directionY * deltaY;
 		randW = 200 + rand()%50;*/
-		Platform* p=new Platform(WIDTH,200+rand()%200,200);
-		lastX=WIDTH+200;
+
+		float deltaY=rand()%150;
+		float directionY=rand()%2;
+		if(directionY==0) directionY=-1;
+		if(lastPlat->y+deltaY>500)
+		{
+			directionY=-1;
+		}
+		else if(lastPlat->y-deltaY<40)
+		{
+			directionY=1;
+		}
+		
+		Platform* p=new Platform(lastPlat->x+lastPlat->w+200,lastPlat->y+directionY*deltaY,200+rand()%200);
+		lastPlat=p;
 		elements.push_back(p);
-		if(rand()%5)
+		if(!(rand()%4))
 		{
 			elements.push_back(p->addTrap());
 		}
@@ -75,7 +92,7 @@ void Map::move()
 
 	if(!elements.empty())  // erase the first platform, which out of the screen
 	{
-		if((elements.front()->x + elements.front()->w) < 0)
+		if((elements.front()->x + elements.front()->w) < -WIDTH)//TODO: do it nicer
 		{
 			delete *elements.begin();
 			elements.erase(elements.begin());// also delete here null pointers from platforms and traps

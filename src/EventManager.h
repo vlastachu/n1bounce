@@ -11,7 +11,7 @@ public:
 		{
 	m=M;
 };
-	void keyPressed (unsigned char key)
+	void keyPressed (int key)
 		{  
 	//std::cout<<ninja;
 	if(!m)

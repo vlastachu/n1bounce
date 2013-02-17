@@ -42,7 +42,7 @@ void display()
 }
 
 
-void keyPressed (unsigned char key, int x, int y) 
+void keyPressed (int key, int x, int y) 
 {  
 	EventManager::Instance().keyPressed(key);
 }
@@ -61,7 +61,7 @@ int main (int argc, char * argv[])
 	glutTimerFunc(30, TimerFunction, 1);
 	glutMouseFunc(mouse);
 	glutPassiveMotionFunc(motion);
-	glutKeyboardFunc(keyPressed);
+	glutSpecialFunc(keyPressed);
 	Engine::Instance();
 
 	glutMainLoop();

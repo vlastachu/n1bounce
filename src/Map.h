@@ -63,7 +63,7 @@ class Map
 	std::list<MapShape*> elements;
 	//float speed;
 	int dist;
-	float lastX;
+	Platform* lastPlat;
 public:
 	Map(GameCore* Parent);
 	void draw();

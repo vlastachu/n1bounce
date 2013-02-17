@@ -29,7 +29,7 @@ public:
 	void gameOver(const char* also);
 	Ninja* getNinja(){return man;}
 	GameCore();
-	virtual void keyPressed(unsigned char key);
+	virtual void keyPressed(int key);
 	virtual void Init();
 	virtual void Run();
 	virtual void Clear();

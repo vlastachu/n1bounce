@@ -14,5 +14,5 @@ public:
 	virtual void Init(){};
 	virtual void Run(){};
 	virtual void Clear(){};
-	virtual void keyPressed(unsigned char key){}
+	virtual void keyPressed(int key){}
 };
