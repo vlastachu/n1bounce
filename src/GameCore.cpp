@@ -31,6 +31,7 @@ void GameCore::Init()
 	scale=1;
 	score = 0;
 	speed = 10;
+	_gameOver=false;
 	g_map->init();
 	man->init();
 }
@@ -41,11 +42,12 @@ void GameCore::Clear()
 
 void GameCore::gameOver(const char* also){
 		std::cout << "GAME OVER! Try again." << also << "\n";
-		Init();
+		_gameOver=true;
 }
 
 void GameCore::glutPrint(float x, float y, void* font, string text) 
-{ 
+{
+	glColor3f(0.0,0.7,0.5);
     glRasterPos2f(x,y); 
     for (int i=0; i<text.size(); i++)
     {
@@ -61,7 +63,7 @@ void GameCore::Run()
 	/*ball.move();
 	ball.draw();*/
 	
-	scale=1-abs(YSCALE_AXIS-man->y)/(HEIGHT*4);
+	scale=1-(YSCALE_AXIS-man->y)/(HEIGHT*4);
 	//score:
 	score++;
 	string sScore = "score: ";
@@ -78,7 +80,9 @@ void GameCore::Run()
 		glVertex2f(WIDTH , YSCALE_AXIS);
 	glEnd();
 	glDisable(GL_BLEND);
-	
+
+	if(_gameOver)
+		Init();
 }
 
 float GameCore::toX(float X)

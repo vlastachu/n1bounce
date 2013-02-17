@@ -12,11 +12,43 @@ Platforms before;
 Contains FixedMapShape objects and provides control for their movement
 */
 
+class MapShape
+{
+public:
+	float x,y,w,h;
+	int id;
+
+	MapShape(float X,float Y,float W,float H,int Id)
+	{
+		x=X;y=Y;w=W;h=H;id=Id;
+	}
+	//virtual void draw()=0;
+};
+
+class Trap:public MapShape
+{
+public:
+	Trap(float X,float Y):MapShape(X,Y,30,15,2){};
+	//virtual void draw();
+};
+
+class Platform:public MapShape
+{
+public:
+	Platform(float X,float Y,float W):MapShape(X,Y,W,30,1){};
+	Trap* addTrap()
+	{
+		return new Trap(x+rand()%(int)(w-30),y-15);
+	}
+	//virtual void draw();
+};
+
+
 class GameCore;
 class Map
 {
 	GameCore* parent;
-	struct Element
+	/*struct Element
 	{
 		float x,y,w,h;
 		int id;
@@ -25,12 +57,13 @@ class Map
 			x=X;y=Y;w=W;h=H;id=Id;
 		}
 
-	};
+	};*/
 
 	int randW, randY, directionY, deltaY;
-	std::list<Element> elements;
+	std::list<MapShape*> elements;
 	//float speed;
 	int dist;
+	float lastX;
 public:
 	Map(GameCore* Parent);
 	void draw();

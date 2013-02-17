@@ -17,7 +17,7 @@ class GameCore:public Module
 	Map* g_map;
 	//Ball ball;
 	int score;
-	
+	bool _gameOver;
 	
 	void glutPrint(float x, float y, void* font, string text);
 public:

@@ -24,9 +24,8 @@ void Ninja::init()
 	phase=0;
 	state=1;
 	dy      = 0;
-	jmp     = false;
+	jmp     = 0;
 	impulse = 16;
-	air=true;
 
 	body.w=r*2;
 	body.h=r*2;
@@ -58,21 +57,31 @@ void Ninja::move()
 		parent->gameOver("deadline");
 	}
 
-
 	prevY=y;
-	//state=2;
 	y -= dy;
 	dy--;
-	if(state==1)
+	
+	/*if(state==1)
 	{
 		state=2;
-	}
+	}*/
 	if(prevY<=borderY && y>=borderY)
 	{
 		dy=0;
 		jmp=0;
 		y=borderY;
-		state=1;
+		if(state!=4 && state!=5)
+			state=1;
+	}
+	else
+	{
+		if(state==1 || state==4)
+			jmp=1;
+
+		if(state!=3 && state!=5)
+		{
+			state=2;
+		}
 	}
 	
 
@@ -81,6 +90,8 @@ void Ninja::move()
 	switch(state)
 	{
 	case 1:
+		h=r*4;
+
 		body.x=0;
 		body.y=(-abs(sin(2*PI*(phase+0.25)))-1) * r*2;
 		body.rot=30;
@@ -100,6 +111,8 @@ void Ninja::move()
 		phase+=(float)1/20;
 		break;
 	case 2:
+		h=r*5;
+
 		body.x=0;
 		body.y=-r*4;
 		body.rot=-30;
@@ -118,6 +131,7 @@ void Ninja::move()
 		
 		break;
 	case 3:
+		h=r*3;
 
 		body.x=0;
 		body.y=-r*2;
@@ -136,12 +150,14 @@ void Ninja::move()
 		katana.y=-r*2+sin(2*PI*phase-0.7)*r;
 		katana.rot=phase*360+90;
 
-		phase+=(float)1/15;
+		phase+=(float)1/10;
 		if(phase>=1)
 			state=2;
 
 		break;
 	case 4:
+		h=r*2;
+
 		body.x=0;
 		body.y=-r;
 		body.rot=0;
@@ -157,6 +173,15 @@ void Ninja::move()
 		katana.x=r*2;
 		katana.y=-r*3/4;
 		katana.rot=180;
+		
+		phase+=(float)1/20;
+		if(phase>=1)
+			state=1;
+		break;
+	case 5:
+		h=0;
+
+		parent->gameOver("trap");
 		break;
 	}
 }

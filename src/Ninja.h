@@ -37,12 +37,11 @@ public:
 	{
 		borderY=Y;
 	};
-	bool air;
 	void jump();
 	void slide();
 	//void mapCollise(float Y,float H, int Id);
 	Ninja(GameCore* Parent);
-	float x,y,r;
+	float x,y,r,h;
 	//int getState(){return state;}
 	void setState(int State){state=State;phase=0;};
 	void init();
