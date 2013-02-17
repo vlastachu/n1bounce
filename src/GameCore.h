@@ -17,11 +17,16 @@ class GameCore:public Module
 	Map* g_map;
 	//Ball ball;
 	int score;
-	float speed;
-	float scale;
-	void gameOver(char* also);
+	
+	
 	void glutPrint(float x, float y, void* font, string text);
 public:
+	float toX(float X);
+	float toY(float Y);
+	float toL(float L);
+	float speed;
+	float scale;
+	void gameOver(const char* also);
 	Ninja* getNinja(){return man;}
 	GameCore();
 	virtual void keyPressed(unsigned char key);

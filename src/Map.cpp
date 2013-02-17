@@ -11,25 +11,33 @@ Map::Map(GameCore* Parent)
 
 void Map::draw()
 {
+	
 	for(std::list<Element>::iterator it = elements.begin(); it != elements.end(); it++)
 	{
 		if((*it).id==1)
-			glColor3f(1.0,0.0,0.0);
+		{
+			
+			glColor3f(0.0,0.0,0.0);
+		
+		}
 		else if((*it).id==2)
-			glColor3f(1.0,1.0,0.0);
+		{
+			glColor3f(1.0,0.0,0.0);
+		}
+			
 		glBegin(GL_LINE_LOOP);
-			glVertex2f((*it).x,(*it).y);
-			glVertex2f((*it).x+(*it).w,(*it).y);
-			glVertex2f((*it).x+(*it).w,(*it).y+(*it).h);
-			glVertex2f((*it).x,(*it).y+(*it).h);
+			glVertex2f(parent->toX((*it).x) , parent->toY((*it).y));
+			glVertex2f(parent->toX((*it).x) + parent->toL((*it).w) , parent->toY((*it).y));
+			glVertex2f(parent->toX((*it).x) + parent->toL((*it).w) , parent->toY((*it).y) + parent->toL((*it).h));
+			glVertex2f(parent->toX((*it).x) , parent->toY((*it).y) + parent->toL((*it).h));
 		glEnd();
+	
 	}
 }
 
 void Map::init()
 {
 	elements.clear();
-	speed = MAP_SPEED;
 	dist = 20;
 	elements.push_back(Element(0,HEIGHT-60,WIDTH,30,1));
 	randY = 30;
@@ -49,7 +57,7 @@ void Map::move()
 		elements.push_back(Element(WIDTH,HEIGHT-randY,randW,30,1));
 		dist=0;
 		if(!(rand() % TRAP_CHANSE)){  // add trap on platform
-			elements.push_back(Element(WIDTH + rand()%(randW - 30),HEIGHT-randY,30,30,2));
+			elements.push_back(Element(WIDTH + rand()%(randW - 30),HEIGHT-15-randY,30,15,2));
 		}
 	}
 	dist++;
@@ -69,7 +77,7 @@ void Map::move()
 	parent->getNinja()->setBorder(2*HEIGHT);
 	for(std::list<Element>::iterator it = elements.begin(); it != elements.end(); it++)
 	{
-		(*it).x-=speed;
+		(*it).x-=parent->speed;
 
 		if((*it).x < parent->getNinja()->x && (*it).x+(*it).w > parent->getNinja()->x)
 		{
@@ -78,6 +86,14 @@ void Map::move()
 			//parent->getNinja()->mapCollise((*it).y,(*it).h,(*it).id);
 				parent->getNinja()->setBorder((*it).y);
 			}
+			/*else if((*it).id==2)
+			{
+				if((*it).y <= parent->getNinja()->y && (*it).y+(*it).h+3 >= parent->getNinja()->y)
+				{
+					parent->getNinja()->setState(4);
+				}
+			}*/
+
 		}
 	}
 	

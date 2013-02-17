@@ -7,7 +7,7 @@
 #define BALLX 100
 #define MAP_SPEED 10
 
-#define XSCALE_AXIS 100
+#define XSCALE_AXIS 200
 #define YSCALE_AXIS 500
 
 

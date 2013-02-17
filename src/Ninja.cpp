@@ -18,7 +18,7 @@ Ninja::Ninja(GameCore* Parent)
 void Ninja::init()
 {	
 	
-	x=200;
+	x=XSCALE_AXIS;
 	y=200;
 	r=15;
 	phase=0;
@@ -44,19 +44,26 @@ void Ninja::init()
 void Ninja::draw()
 {
 	//Graphics::circle(x,y-r,r);
-	Graphics::draw(leg1.x+x, leg1.y+y, leg1.w, leg1.h, leg1.rot, leg1.texture);
-	Graphics::draw(body.x+x, body.y+y, body.w, body.h, body.rot, body.texture);
-	Graphics::draw(katana.x+x, katana.y+y, katana.w, katana.h, katana.rot, katana.texture);
-	Graphics::draw(leg2.x+x, leg2.y+y, leg2.w, leg2.h, leg2.rot, leg2.texture);
+	
+	Graphics::draw(parent->toX(leg1.x+x)   , parent->toY(leg1.y+y)   , parent->toL(leg1.w)   , parent->toL(leg1.h)   , leg1.rot   , leg1.texture);
+	Graphics::draw(parent->toX(body.x+x)   , parent->toY(body.y+y)   , parent->toL(body.w)   , parent->toL(body.h)   , body.rot   , body.texture);
+	Graphics::draw(parent->toX(katana.x+x) , parent->toY(katana.y+y) , parent->toL(katana.w) , parent->toL(katana.h) , katana.rot , katana.texture);
+	Graphics::draw(parent->toX(leg2.x+x)   , parent->toY(leg2.y+y)   , parent->toL(leg2.w)   , parent->toL(leg2.h)   , leg2.rot   , leg2.texture);
 }
 
 void Ninja::move()
 {
+	if(y >= HEIGHT*2)
+	{
+		parent->gameOver("deadline");
+	}
+
+
 	prevY=y;
 	//state=2;
 	y -= dy;
 	dy--;
-	if(state!=3)
+	if(state==1)
 	{
 		state=2;
 	}
@@ -167,4 +174,9 @@ void Ninja::jump()
 		dy=impulse;
 		jmp++;
 	}
+}
+
+void Ninja::slide()
+{
+	setState(4);
 }

@@ -24,7 +24,7 @@ class Ninja
 
 	GameCore* parent;
 	float phase;
-	float speed;
+	//float speed;
 	int state;	
 	struct Element 
 	{
@@ -39,6 +39,7 @@ public:
 	};
 	bool air;
 	void jump();
+	void slide();
 	//void mapCollise(float Y,float H, int Id);
 	Ninja(GameCore* Parent);
 	float x,y,r;

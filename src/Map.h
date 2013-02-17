@@ -29,7 +29,7 @@ class Map
 
 	int randW, randY, directionY, deltaY;
 	std::list<Element> elements;
-	float speed;
+	//float speed;
 	int dist;
 public:
 	Map(GameCore* Parent);

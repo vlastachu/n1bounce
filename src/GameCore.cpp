@@ -16,14 +16,22 @@ GameCore::GameCore()
 
 void GameCore::keyPressed(unsigned char key)
 {
-	man->jump();
+	if(key=='w')
+		man->jump();
+	if(key=='s')
+		man->slide();
+	if(key=='1')
+		scale-=0.1;
+	if(key=='2')
+		speed++;
 }
 
 void GameCore::Init()
 {
-	//e_mgr.Add(&ball);
+	scale=1;
+	score = 0;
+	speed = 10;
 	g_map->init();
-	//ball.init();
 	man->init();
 }
 
@@ -31,11 +39,9 @@ void GameCore::Clear()
 {
 }
 
-void GameCore::gameOver(char* also){
+void GameCore::gameOver(const char* also){
 		std::cout << "GAME OVER! Try again." << also << "\n";
-		score = 0;
-		g_map->init();
-		man->init();
+		Init();
 }
 
 void GameCore::glutPrint(float x, float y, void* font, string text) 
@@ -55,7 +61,7 @@ void GameCore::Run()
 	/*ball.move();
 	ball.draw();*/
 	
-	
+	scale=1-abs(YSCALE_AXIS-man->y)/(HEIGHT*4);
 	//score:
 	score++;
 	string sScore = "score: ";
@@ -63,9 +69,29 @@ void GameCore::Run()
 	sScore+=chScore;
 	glutPrint(800,20,GLUT_BITMAP_TIMES_ROMAN_24,sScore);
 	
+	glEnable(GL_BLEND);
+	glColor4f(0.0,1.0,0.0,0.2);
+	glBegin(GL_LINES);
+		glVertex2f(XSCALE_AXIS , 0);
+		glVertex2f(XSCALE_AXIS , HEIGHT);
+		glVertex2f(0 , YSCALE_AXIS);
+		glVertex2f(WIDTH , YSCALE_AXIS);
+	glEnd();
+	glDisable(GL_BLEND);
 	
-	if(man->y >= HEIGHT)
-	{
-		gameOver("deadline");
-	}
+}
+
+float GameCore::toX(float X)
+{
+	return XSCALE_AXIS+(X-XSCALE_AXIS)*scale;
+}
+
+float GameCore::toY(float Y)
+{
+	return YSCALE_AXIS+(Y-YSCALE_AXIS)*scale;
+}
+
+float GameCore::toL(float L)
+{
+	return L*scale;
 }
