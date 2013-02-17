@@ -1,20 +1,26 @@
 #pragma once
-#include <vector>
-#include "GraphicShape.h"
+#include "Module.h"
+//#include <vector>
 
+//class Ninja;
 class EventManager
 {
-	vector<GraphicShape*> listeners;
+	Module* m;
 public:
-	void Add(GraphicShape* GS)
-	{
-		listeners.push_back(GS);
-	}
-	void keyPressed (unsigned char key) 
-	{  
-		for(vector<GraphicShape*>::iterator it=listeners.begin();it!=listeners.end();it++)
+	void Register(Module* M)
 		{
-			(*it)->keyPressed(key);
-		}
-	}
+	m=M;
+};
+	void keyPressed (unsigned char key)
+		{  
+	//std::cout<<ninja;
+	if(!m)
+		exit (9);
+	m->keyPressed(key);
+}
+	static EventManager& Instance()
+    {
+            static EventManager theSingleInstance;
+            return theSingleInstance;
+    }
 };

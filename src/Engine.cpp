@@ -1,6 +1,5 @@
 #include "Engine.h"
 #include "Map.h"
-#include "Ball.h"
 #include "defs.h"
 #include <iostream>
 

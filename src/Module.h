@@ -10,7 +10,9 @@ public:
 	{
 		mgr=Mgr;
 	}
+	
 	virtual void Init(){};
 	virtual void Run(){};
 	virtual void Clear(){};
+	virtual void keyPressed(unsigned char key){}
 };
