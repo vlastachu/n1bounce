@@ -59,11 +59,8 @@ void Text::renderTexture(){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR); 
 	
 	//glPixelStorei( GL_UNPACK_ALIGNMENT, 1 ); 
-	if(colorful)
-	{
 		glColor4f(color[0],color[1],color[2],color[3]);
 		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
-	}
 	glBindTexture(GL_TEXTURE_2D,textureNum);
 	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, texWidth, texHeight, GL_RED, GL_UNSIGNED_BYTE, data);
 }
@@ -128,7 +125,6 @@ void Text::renderTexture(){
 
 	Text* Text::setColor(float red, float green, float blue, float alpha){
 		changed = true;
-		colorful = true;
 		color[0] = red;
 		color[1] = green;
 		color[2] = blue;
@@ -139,7 +135,10 @@ void Text::renderTexture(){
 	Text::Text(){
 		kerning = false;
 		changed = true;
-		colorful = false;
+		color[0] = 0.;
+		color[1] = 0.;
+		color[2] = 0.;
+		color[3] = 1.;
 		wordSpacing = 15;
 		letterSpacing = 0;
 		lineSpacing = 20;

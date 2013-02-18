@@ -24,7 +24,6 @@ private:
 	int fontHeight, fontWidth,   //texture size is font  
 			texHeight, texWidth; //size supplemented to power of two 
 	float color[4];
-	bool colorful;
 	static int addToPowerOfTwo(int i);
 	GLuint textureNum;
 public:

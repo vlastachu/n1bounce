@@ -1,8 +1,5 @@
 #include "Engine.h"
-#include "Map.h"
-#include "Ball.h"
-#include "defs.h"
-#include <iostream>
+
 
 Engine::Engine()
 {
@@ -16,11 +13,11 @@ Engine& Engine::Instance()
         return theSingleInstance;
 }
 
-void Engine::gameOver(char* also){
-		std::cout << "GAME OVER! Try again." << also << "\n";
-		mgr.Stop("game");
-		mgr.Start("game");
-}
+//void Engine::gameOver(char* also){
+//		std::cout << "GAME OVER! Try again." << also << "\n";
+//		mgr.Stop("game");
+//		mgr.Start("game");
+//}
 
 void Engine::play()
 {
