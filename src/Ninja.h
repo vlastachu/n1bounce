@@ -1,7 +1,7 @@
 #pragma once
+#include "GameCore.h"
 #include "EventManager.h"
 #include "Graphics.h"
-#include "GameCore.h"
 
 class GameCore;
 class Ninja

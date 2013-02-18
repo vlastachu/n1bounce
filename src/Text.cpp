@@ -3,11 +3,12 @@
 #include <ft2build.h>
 #include <limits>
 #include <list>
+#include <GL/glew.h>
 #include "defs.h"
 void Text::renderTexture(){
 	//немного бесполезный труд, но что поделать
 	//высчитаю конечную ширину текстуры и округлю до степени двойки
-	fontWidth = texHeight = texWidth = 0;
+	fontWidth = texHeight = texWidth = 20;//таки погрешность 
 	fontHeight = font->getSize();
 	GlyphCash g;
     for(unsigned int i = 0; i < text.size(); i++){
@@ -15,15 +16,15 @@ void Text::renderTexture(){
 		if(text[i] == '\n') fontHeight += font->getSize() + lineSpacing; else
 		{
 			g = font->renderChar(text[i]);
-			fontWidth += g.bitmap.width;//->advance.x >> 6;
+			fontWidth += g.bitmap.width;//->advance.x >> 6;  вот отсюда растёт погрешность. костыль так сказать
 			fontWidth += g.bitmap_left;
 			fontWidth += letterSpacing;
 			if(kerning && i > 1)
 				fontWidth += font->getKerning(text[i-1],text[i]);
 		}
 	}
-	texHeight = Texture::addToPowerOfTwo(fontHeight);
-	texWidth = Texture::addToPowerOfTwo(fontWidth);
+	texHeight = addToPowerOfTwo(fontHeight);
+	texWidth = addToPowerOfTwo(fontWidth);
 	//TODO: calculating of hight width
 	int strSize = text.size();
 	unsigned char *data = new unsigned char[texHeight*texWidth];
@@ -58,13 +59,10 @@ void Text::renderTexture(){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR); // Linear Filtering
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR); 
 	
-	//glPixelStorei( GL_UNPACK_ALIGNMENT, 1 ); 
-		glColor4f(color[0],color[1],color[2],color[3]);
-		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
 	glBindTexture(GL_TEXTURE_2D,textureNum);
 	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, texWidth, texHeight, GL_RED, GL_UNSIGNED_BYTE, data);
 }
-	Text* Text::setText(string newText){
+	Text* Text::setText(std::string newText){
 		text = newText;
 		changed = true;
 		return this;
@@ -88,21 +86,28 @@ void Text::renderTexture(){
 		if(changed){
 			renderTexture();
 			changed = false;
-		}
+			}
+		   glEnable (GL_TEXTURE_2D);
+		glEnable(GL_BLEND);
+		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 		GLint swizzleMask[] = {GL_ZERO, GL_ZERO, GL_ZERO, GL_RED};
 		glTexParameteriv(GL_TEXTURE_2D, 0x8E46, swizzleMask); // 0x8E46 is GL_TEXTURE_SWIZZLE_RGBA 
+		glColor4f(color[0],color[1],color[2],color[3]);
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
 		glBindTexture(GL_TEXTURE_2D,textureNum);
+		
+	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 ); 
 		glBegin(GL_QUADS);
 		  glTexCoord2f(0.0f, 0.0f);glVertex2f(x, y); //top left
 		  glTexCoord2f(1.0f, 0.0f);glVertex2f(x + texWidth, y); //top right
 		  glTexCoord2f(1.0f, 1.0f);glVertex2f(x + texWidth,y + texHeight); // bottom right
 		  glTexCoord2f(0.0f, 1.0f);glVertex2f(x ,y + texHeight); //bottom left
 		glEnd();
-		GLint swizzleMask1[] = {GL_RED, GL_GREEN, GL_BLUE, GL_ALPHA};
-		glTexParameteriv(GL_TEXTURE_2D, 0x8E46, swizzleMask1); // 0x8E46 is GL_TEXTURE_SWIZZLE_RGBA 
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	}
 	
-	Text* Text::setFont(string fileName,int size)
+	Text* Text::setFont(std::string fileName,int size)
 	{
 		font = Font::getFont(fileName,size);
 		changed = true;

@@ -3,9 +3,9 @@
 #include <freetype\ftglyph.h>
 bool Font::isInit;
 FT_Library Font::ft;
-map<string,Font*> Font::loadedFonts;
+std::map<std::string,Font*> Font::loadedFonts;
 
-Font::Font(string name,int size){
+Font::Font(std::string name,int size){
 	if(!isInit){
 		if (FT_Init_FreeType(&ft)) {
 			fprintf(stderr, "Could not init freetype library\n");
@@ -21,24 +21,24 @@ Font::Font(string name,int size){
 }
 
 GlyphCash Font::renderChar(char c){
-	map<char, GlyphCash>::iterator it = glyphCash.find(c);
+	std::map<char, GlyphCash>::iterator it = glyphCash.find(c);
 	if(it != glyphCash.end())
 		return it->second;
-	FT_Load_Char( face, c, FT_LOAD_RENDER );
+	FT_Load_Char( face, c, FT_LOAD_RENDER ); 
 	GlyphCash g = GlyphCash(face->glyph->bitmap, face->glyph->bitmap_left, face->glyph->bitmap_top);
 	glyphCash.insert(it,std::pair<char, GlyphCash> (c, g));
 	return g;
 }
 
-Font* Font::getFont(string fileName,int size){
+Font* Font::getFont(std::string fileName,int size){
 	std::ostringstream s;
 	s << size << fileName;
-	string query(s.str());
-	map<string,Font*>::iterator it = loadedFonts.find(query);
+	std::string query(s.str());
+	std::map<std::string,Font*>::iterator it = loadedFonts.find(query);
 	if(it != loadedFonts.end())
 		return it->second;
 	Font* font = new Font(fileName, size);
-	loadedFonts.insert(std::pair<string, Font*>(query, font));
+	loadedFonts.insert(std::pair<std::string, Font*>(query, font));
 	return font;
 }
 

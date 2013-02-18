@@ -1,7 +1,8 @@
 #include <iostream>
+#include <GL/glew.h>
 #include <GL\glut.h>
 #include "GameCore.h"
-
+#include "Text.h"
 GameCore::GameCore()
 {
 	g_map=new Map(this);
@@ -43,6 +44,10 @@ void GameCore::Init()
 	_key=false;
 	g_map->init();
 	man->init();
+	text = (new Text())->setFont("../fonts/Ubuntu-m.ttf",33)
+		->setX(700)
+		->setY(20)
+		->setColor(0.4,0.5,0.7,1.0);
 }
 
 void GameCore::Clear()
@@ -54,15 +59,6 @@ void GameCore::gameOver(const char* also){
 		_gameOver=true;
 }
 
-void GameCore::glutPrint(float x, float y, void* font, string text) 
-{
-	glColor3f(0.0,0.7,0.5);
-    glRasterPos2f(x,y); 
-    for (int i=0; i<text.size(); i++)
-    {
-        glutBitmapCharacter(font, text[i]);
-    }
-}
 void GameCore::Run()
 {
 	man->move();
@@ -78,7 +74,7 @@ void GameCore::Run()
 	string sScore = "score: ";
 	char chScore[10]; itoa(score,chScore,10);
 	sScore+=chScore;
-	glutPrint(800,20,GLUT_BITMAP_TIMES_ROMAN_24,sScore);
+	text->setText(sScore)->draw();
 	
 	/*glEnable(GL_BLEND);
 	glColor4f(0.0,1.0,0.0,0.2);

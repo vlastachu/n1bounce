@@ -1,3 +1,5 @@
+
+#include <GL/glew.h>
 #include <GL\glu.h>
 #include "Graphics.h"
 #include "defs.h"

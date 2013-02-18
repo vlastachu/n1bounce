@@ -1,9 +1,9 @@
 #pragma once
+#include "Text.h"
 #include "Map.h"
 //#include "Ball.h"
 #include "Module.h"
 #include "Ninja.h"
-
 /*
  Engine provides all the application
  This class agregating the Map and the Ball objects
@@ -18,8 +18,7 @@ class GameCore:public Module
 	int score;
 	bool _gameOver;
 	bool _key;
-	void glutPrint(float x, float y, void* font, string text);
-
+	Text *text;
 public:
 	float toX(float X);
 	float toY(float Y);

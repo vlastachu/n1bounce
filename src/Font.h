@@ -4,8 +4,6 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include "defs.h"
-#define string std::string
-#define map std::map
 
 struct GlyphCash{
 		FT_Bitmap bitmap;
@@ -17,17 +15,17 @@ struct GlyphCash{
 
 class Font{
 private:
-	map<char, GlyphCash> glyphCash;
-	static map<string,Font*> loadedFonts;
-	string fontName;
+	std::map<char, GlyphCash> glyphCash;
+	static std::map<std::string,Font*> loadedFonts;
+	std::string fontName;
 	int fontSize;
 	static FT_Library ft;
 	static bool isInit;
 	FT_Face face;
-	Font(string name,int size);
+	Font(std::string name,int size);
 public:
 	GlyphCash renderChar(char c);
-	static Font* getFont(string fileName,int size);  //get font from ttf file
+	static Font* getFont(std::string fileName,int size);  //get font from ttf file
 	int getSize();
 	int getKerning(char prev, char cur);
 };
