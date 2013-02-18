@@ -1,18 +1,8 @@
 #pragma once
-
 #include "EventManager.h"
 #include "Graphics.h"
 #include "GameCore.h"
 
-//#include "Leg.h"
-//#include <vector>
-//using namespace std;
-//#define vector std::vector
-
-
-//class Leg;
-//class Animation;
-//class AnimManager;
 class GameCore;
 class Ninja
 {
@@ -24,7 +14,7 @@ class Ninja
 
 	GameCore* parent;
 	float phase;
-	//float speed;
+	
 	int state;	
 	struct Element 
 	{

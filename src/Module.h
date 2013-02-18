@@ -11,8 +11,9 @@ public:
 		mgr=Mgr;
 	}
 	
-	virtual void Init(){};
-	virtual void Run(){};
-	virtual void Clear(){};
-	virtual void keyPressed(int key){}
+	virtual void Init(){}
+	virtual void Run(){}
+	virtual void Clear(){}
+	virtual void keyPressed(int Key){}
+	virtual void keyReleased(int Key){}
 };

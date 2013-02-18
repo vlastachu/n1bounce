@@ -1,12 +1,7 @@
 #include <iostream>
 #include <GL\glut.h>
 #include "GameCore.h"
-//#include "Map.h"
-//#include "defs.h"
 
-
-//#include "EventManager.h"
-///coment
 GameCore::GameCore()
 {
 	g_map=new Map(this);
@@ -14,15 +9,29 @@ GameCore::GameCore()
 	EventManager::Instance().Register(this);
 }
 
-void GameCore::keyPressed(int key)
+void GameCore::keyPressed(int Key)
 {
-	if(key==GLUT_KEY_UP)
-		man->jump();
-	if(key==GLUT_KEY_DOWN)
-		man->slide();
-	if(key==GLUT_KEY_RIGHT)
-		speed++;
-	
+	if(!_key)
+	{
+		switch(Key)
+		{
+		case GLUT_KEY_UP:
+			man->jump();
+			break;
+		case GLUT_KEY_DOWN:
+			man->slide();
+			break;
+		case GLUT_KEY_RIGHT:
+			speed++;
+			break;
+		}
+		_key=true;
+	}
+}
+
+void GameCore::keyReleased(int Key)
+{
+	_key=false;
 }
 
 void GameCore::Init()
@@ -31,6 +40,7 @@ void GameCore::Init()
 	score = 0;
 	speed = 10;
 	_gameOver=false;
+	_key=false;
 	g_map->init();
 	man->init();
 }
@@ -70,7 +80,7 @@ void GameCore::Run()
 	sScore+=chScore;
 	glutPrint(800,20,GLUT_BITMAP_TIMES_ROMAN_24,sScore);
 	
-	glEnable(GL_BLEND);
+	/*glEnable(GL_BLEND);
 	glColor4f(0.0,1.0,0.0,0.2);
 	glBegin(GL_LINES);
 		glVertex2f(XSCALE_AXIS , 0);
@@ -78,7 +88,7 @@ void GameCore::Run()
 		glVertex2f(0 , YSCALE_AXIS);
 		glVertex2f(WIDTH , YSCALE_AXIS);
 	glEnd();
-	glDisable(GL_BLEND);
+	glDisable(GL_BLEND);*/
 
 	if(_gameOver)
 		Init();

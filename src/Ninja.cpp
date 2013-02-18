@@ -9,17 +9,17 @@ Ninja::Ninja(GameCore* Parent)
 {
 	parent=Parent;
 	
-	body.texture=Graphics::png2tex("../image/ninja.png");
-	leg1.texture=Graphics::png2tex("../image/leg.png");
+	body.texture=Graphics::png2tex("../data/ninja.png");
+	leg1.texture=Graphics::png2tex("../data/leg.png");
 	leg2.texture=leg1.texture;
-	katana.texture=Graphics::png2tex("../image/katana.png");
+	katana.texture=Graphics::png2tex("../data/katana.png");
 }
 
 void Ninja::init()
 {	
 	
 	x=XSCALE_AXIS;
-	y=200;
+	y=400;
 	r=15;
 	phase=0;
 	state=1;
@@ -174,14 +174,16 @@ void Ninja::move()
 		katana.y=-r*3/4;
 		katana.rot=180;
 		
-		phase+=(float)1/20;
+		phase+=(float)1/15;
 		if(phase>=1)
 			state=1;
 		break;
 	case 5:
 		h=0;
-
-		parent->gameOver("trap");
+		body.x-=parent->speed;
+		phase+=(float)1/20;
+		if(phase>=1)
+			parent->gameOver("trap");
 		break;
 	}
 }

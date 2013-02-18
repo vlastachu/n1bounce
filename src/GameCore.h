@@ -13,13 +13,13 @@ class Map;
 class Ninja;
 class GameCore:public Module
 {
-	Ninja* man;//destructor
+	Ninja* man;
 	Map* g_map;
-	//Ball ball;
 	int score;
 	bool _gameOver;
-	
+	bool _key;
 	void glutPrint(float x, float y, void* font, string text);
+
 public:
 	float toX(float X);
 	float toY(float Y);
@@ -29,7 +29,8 @@ public:
 	void gameOver(const char* also);
 	Ninja* getNinja(){return man;}
 	GameCore();
-	virtual void keyPressed(int key);
+	virtual void keyPressed(int Key);
+	virtual void keyReleased(int Key);
 	virtual void Init();
 	virtual void Run();
 	virtual void Clear();

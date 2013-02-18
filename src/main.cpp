@@ -1,18 +1,8 @@
 #include <vector> // WTFFFFF??????????????
 #include <GL\glut.h>
+
 #include <time.h>
-//#include <iostream>
-//using namespace std;
-
 #include "Engine.h"
-
-//#include "EventManager.h"
-//#include "defs.h"
-
-
-
-
-
 
 
 void reshape(int w, int h)
@@ -44,9 +34,14 @@ void display()
 }
 
 
-void keyPressed (int key, int x, int y) 
+void keyPressed(int Key,int,int) 
 {  
-	EventManager::Instance().keyPressed(key);
+	EventManager::Instance().keyPressed(Key);
+}
+
+void keyReleased(int Key,int,int)
+{
+	EventManager::Instance().keyReleased(Key);
 }
 
 
@@ -57,13 +52,15 @@ int main (int argc, char * argv[])
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA);
 	glutInitWindowSize(WIDTH, HEIGHT);
-	glutCreateWindow("Mouse");
+	glutCreateWindow("Crysis");
 	glOrtho (0, WIDTH, HEIGHT, 0, -1, 1);
 	glutDisplayFunc(display);
 	glutTimerFunc(30, TimerFunction, 1);
 	glutMouseFunc(mouse);
 	glutPassiveMotionFunc(motion);
 	glutSpecialFunc(keyPressed);
+	glutSpecialUpFunc(keyReleased);
+
 	Engine::Instance();
 
 	glutMainLoop();
