@@ -1,8 +1,8 @@
 #include <iostream>
 #include <GL\glut.h>
 #include "GameCore.h"
-#include "Map.h"
-#include "defs.h"
+//#include "Map.h"
+//#include "defs.h"
 
 
 //#include "EventManager.h"
@@ -20,10 +20,9 @@ void GameCore::keyPressed(int key)
 		man->jump();
 	if(key==GLUT_KEY_DOWN)
 		man->slide();
-	/*if(key=='1')
-		scale-=0.1;
-	if(key=='2')
-		speed++;*/
+	if(key==GLUT_KEY_RIGHT)
+		speed++;
+	
 }
 
 void GameCore::Init()

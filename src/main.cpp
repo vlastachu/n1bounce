@@ -1,11 +1,13 @@
-#include <vector>
-#include <time.h>
-#include <iostream>
-using namespace std;
+#include <vector> // WTFFFFF??????????????
 #include <GL\glut.h>
+#include <time.h>
+//#include <iostream>
+//using namespace std;
+
 #include "Engine.h"
-#include "EventManager.h"
-#include "defs.h"
+
+//#include "EventManager.h"
+//#include "defs.h"
 
 
 

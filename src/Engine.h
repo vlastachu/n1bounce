@@ -13,14 +13,14 @@ private:
 	ModuleManager mgr;
 	GameCore game;
 	Engine();
-	Engine(const Engine& root);
-	Engine& operator=(const Engine&);
-	void gameOver(char* also);
+	//Engine(const Engine& root);
+	//Engine& operator=(const Engine&);
+	//void gameOver(char* also);
 public:
 	static Engine& Instance();
 	void play();
-	GameCore* getGame()
+	/*GameCore* getGame()
 	{
 		return &game;
-	}
+	}*/
 	};

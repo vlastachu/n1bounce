@@ -1,8 +1,8 @@
-#include <list>
-#include <GL\glut.h>
+//#include <list>
+#include <GL\gl.h>
 #include "Map.h"
-#include "Engine.h"
-#include "defs.h"
+//#include "Engine.h"
+//#include "defs.h"
 
 Map::Map(GameCore* Parent)
 {
