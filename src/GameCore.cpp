@@ -32,6 +32,7 @@ void GameCore::gameOver(char* also){
 
 void GameCore::glutPrint(float x, float y, void* font, string text) 
 { 
+    glColor4f(0,0,0,0);
     glRasterPos2f(x,y); 
     for (int i=0; i<text.size(); i++)
     {
@@ -53,7 +54,7 @@ void GameCore::Run()
 	glutPrint(800,20,GLUT_BITMAP_TIMES_ROMAN_24,sScore);
 	
 	
-	ball.setborder(HEIGHT + 1); 
+	ball.setborder(-200); 
 	std::list<FixedMapShape*> Plat = g_map.getPlatforms();
 	for(std::list<FixedMapShape*>::iterator it = Plat.begin(); it != Plat.end(); it++){
 		FixedMapShape* platform = *it;
