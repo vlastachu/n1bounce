@@ -96,11 +96,24 @@ void Text::renderTexture(){
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 		GLint swizzleMask[] = {GL_ZERO, GL_ZERO, GL_ZERO, GL_RED};
 		glTexParameteriv(GL_TEXTURE_2D, 0x8E46, swizzleMask); // 0x8E46 is GL_TEXTURE_SWIZZLE_RGBA 
+		if(shadow)
+		{
+			glColor4f(shadowColor[0],shadowColor[1],shadowColor[2],shadowColor[3]);
+			glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
+			glBindTexture(GL_TEXTURE_2D,textureNum);		
+			glPixelStorei( GL_UNPACK_ALIGNMENT, 1 ); 
+			glBegin(GL_QUADS);
+			  glTexCoord2f(0.0f, 0.0f);glVertex2f(x + shadowDx, y + shadowDy); //top left
+			  glTexCoord2f(1.0f, 0.0f);glVertex2f(x + texWidth + shadowDx, y + shadowDy); //top right
+			  glTexCoord2f(1.0f, 1.0f);glVertex2f(x + texWidth + shadowDx,y + texHeight + shadowDy); // bottom right
+			  glTexCoord2f(0.0f, 1.0f);glVertex2f(x + shadowDx, y + texHeight + shadowDy); //bottom left
+			glEnd();
+		}
 		glColor4f(color[0],color[1],color[2],color[3]);
 		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
 		glBindTexture(GL_TEXTURE_2D,textureNum);
 		
-	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 ); 
+		glPixelStorei( GL_UNPACK_ALIGNMENT, 1 ); 
 		glBegin(GL_QUADS);
 		  glTexCoord2f(0.0f, 0.0f);glVertex2f(x, y); //top left
 		  glTexCoord2f(1.0f, 0.0f);glVertex2f(x + texWidth, y); //top right
@@ -110,6 +123,20 @@ void Text::renderTexture(){
 		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	}
 	
+	
+	Text* Text::setShadow(bool onOff, int dx, int dy, float red, float green, float blue, float alpha)
+	{
+		shadow = onOff;
+		shadowDx = dx;
+		shadowDy = dy;
+		shadowColor[0] = red;
+		shadowColor[1] = green;
+		shadowColor[2] = blue;
+		shadowColor[3] = alpha;
+		changed = true;
+		return this;
+	}
+
 	Text* Text::setFont(std::string fileName,int size)
 	{
 		font = Font::getFont(fileName,size);

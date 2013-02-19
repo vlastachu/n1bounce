@@ -22,9 +22,13 @@ private:
 	float color[4];
 	static int addToPowerOfTwo(int i);
 	GLuint textureNum;
+	bool shadow;
+	int shadowDx, shadowDy;
+	float shadowColor[4];
 public:
-	Text* Text::setX(int x_);
-	Text* Text::setY(int y_);
+	Text* setShadow(bool onOff, int dx, int dy, float red, float green, float blue, float alpha);
+	Text* setX(int x_);
+	Text* setY(int y_);
 	Text* setColor(float red, float green, float blue, float alpha);
 	Text* setText(std::string newText);
 	Text* setLineSpacing(int n);

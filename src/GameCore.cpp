@@ -47,9 +47,10 @@ void GameCore::Init()
 	man->init();
 	text = (new Text())
 		->setFont("../fonts/Ubuntu-m.ttf",33)
+		->setShadow(true, 2, 2, 0.0, 0.38, 0.78,1.0)
 		->setX(700)
 		->setY(20)
-		->setColor(0.4,0.5,0.7,1.0);
+		->setColor(1.0, 0.615, 0.29,1.0);
 }
 
 void GameCore::Clear()
