@@ -9,11 +9,11 @@ void Text::renderTexture(){
 	//немного бесполезный труд, но что поделать
 	//высчитаю конечную ширину текстуры и округлю до степени двойки
 	fontWidth = texHeight = texWidth = 20;//таки погрешность 
-	fontHeight = font->getSize();
+	texHeight = fontHeight = font->getSize();	
 	GlyphCash g;
     for(unsigned int i = 0; i < text.size(); i++){
 		if(text[i] == ' ') fontWidth += wordSpacing; else
-		if(text[i] == '\n') fontHeight += font->getSize() + lineSpacing; else
+		if(text[i] == '\n') texHeight += font->getSize() + lineSpacing; else
 		{
 			g = font->renderChar(text[i]);
 			fontWidth += g.bitmap.width;//->advance.x >> 6;  вот отсюда растёт погрешность. костыль так сказать
@@ -23,7 +23,7 @@ void Text::renderTexture(){
 				fontWidth += font->getKerning(text[i-1],text[i]);
 		}
 	}
-	texHeight = addToPowerOfTwo(fontHeight);
+	texHeight = addToPowerOfTwo(texHeight);
 	texWidth = addToPowerOfTwo(fontWidth);
 	//TODO: calculating of hight width
 	int strSize = text.size();
@@ -32,15 +32,20 @@ void Text::renderTexture(){
 	int left = 0, top = 0; 
 	for(unsigned int i = 0; i < strSize; i++){
 		if(text.at(i) == ' ') left += wordSpacing; else
-		if(text.at(i) == '\n') top += fontHeight + lineSpacing; else
+			if(text.at(i) == '\n'){ top += fontHeight + lineSpacing; left = 0;}
+		else
 		{
 			g = font->renderChar(text.at(i));
+			if(!kerning || i < 2)
+				left += g.bitmap_left + letterSpacing;
+			else
+				left += g.bitmap_left + letterSpacing + font->getKerning(text[i-1],text[i]);
 			int pitch = g.bitmap.pitch;
 			if (pitch < 0) pitch = -pitch;
 			for (int row = 0; row < g.bitmap.rows; ++row) 
 			{
 				if(!kerning)
-				std::memcpy(data + left + texWidth*(row + fontHeight -  g.bitmap_top)
+				std::memcpy(data + left + texWidth*(row + fontHeight - g.bitmap_top + top)
 					, g.bitmap.buffer + pitch * row, pitch);
 				else
 					for(int b = 0; b < pitch; b++){
@@ -50,11 +55,9 @@ void Text::renderTexture(){
 							data[left + texWidth*(row + fontHeight -  g.bitmap_top) + b] = UCHAR_MAX;
 					}
 			}
+			left += g.bitmap.width;
 		}
-		if(!kerning || i < 2)
-			left += g.bitmap_left + g.bitmap.width + letterSpacing;
-		else
-			left += g.bitmap_left + g.bitmap.width + letterSpacing + font->getKerning(text[i-1],text[i]);
+		
 	}
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR); // Linear Filtering
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR); 
@@ -137,6 +140,12 @@ void Text::renderTexture(){
 		return this;
 	}
 
+	Text* Text::setKerning(bool k)
+	{
+		kerning = k;
+		changed = true;
+		return this;
+	}
 	Text::Text(){
 		kerning = false;
 		changed = true;

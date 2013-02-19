@@ -3,11 +3,11 @@
 #include <GL\glut.h>
 #include "GameCore.h"
 #include "Text.h"
+#include "Engine.h"
 GameCore::GameCore()
 {
 	g_map=new Map(this);
 	man=new Ninja(this);
-	EventManager::Instance().Register(this);
 }
 
 void GameCore::keyPressed(int Key)
@@ -37,6 +37,7 @@ void GameCore::keyReleased(int Key)
 
 void GameCore::Init()
 {
+	EventManager::Instance().Register(this);
 	scale=1;
 	score = 0;
 	speed = 10;
@@ -44,7 +45,8 @@ void GameCore::Init()
 	_key=false;
 	g_map->init();
 	man->init();
-	text = (new Text())->setFont("../fonts/Ubuntu-m.ttf",33)
+	text = (new Text())
+		->setFont("../fonts/Ubuntu-m.ttf",33)
 		->setX(700)
 		->setY(20)
 		->setColor(0.4,0.5,0.7,1.0);
@@ -86,8 +88,12 @@ void GameCore::Run()
 	glEnd();
 	glDisable(GL_BLEND);*/
 
-	if(_gameOver)
-		Init();
+	if(_gameOver){
+		map<string,void*> n;
+		n.insert(std::pair<string,void*>("score",&score));
+		Engine::Instance().mgr.Stop("game");
+		Engine::Instance().mgr.Start("final",n);
+	}
 }
 
 float GameCore::toX(float X)
@@ -103,4 +109,8 @@ float GameCore::toY(float Y)
 float GameCore::toL(float L)
 {
 	return L*scale;
+}
+
+void GameCore::send(map<string, void*> params){
+
 }

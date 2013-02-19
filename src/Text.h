@@ -32,6 +32,7 @@ public:
 	Text* setWordSpacing(int n);
 	Text* setFont(std::string fileName,int size);
 	Text* setFontHeight(int h); // height in pixels
+	Text* setKerning(bool k);
 	void draw();
 	Text();
 };

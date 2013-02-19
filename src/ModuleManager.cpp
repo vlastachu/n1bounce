@@ -23,6 +23,19 @@ void ModuleManager::Start(string name)
 	}
 }
 
+void ModuleManager::Start(string name,map<string, void*> params)
+{
+	map<string,Module*>::iterator it=allModules.find(name);
+	if(it!=allModules.end())
+	{
+		activeModules.insert(std::pair<string,Module*>(name,it->second));
+		it->second->setManager(this);//NULL->Init()
+		it->second->send(params);
+		it->second->Init();//NULL->Init()
+		
+	}
+}
+
 void ModuleManager::Stop(string name)
 {
 	dump.push_back(name);

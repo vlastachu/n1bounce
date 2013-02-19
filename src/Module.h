@@ -1,5 +1,13 @@
 #pragma once
+#include <map>
+#include <vector>
+#include <string>
+//using namespace std;
+using std::string;
+using std::map;
+using std::vector;
 #include "ModuleManager.h"
+
 class ModuleManager;
 class Module
 {
@@ -16,4 +24,5 @@ public:
 	virtual void Clear(){}
 	virtual void keyPressed(int Key){}
 	virtual void keyReleased(int Key){}
+	virtual void send(map<string, void*> params){}
 };

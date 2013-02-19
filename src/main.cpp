@@ -24,7 +24,6 @@ void TimerFunction(int value)
 	glutTimerFunc(30,TimerFunction, 1);
 	Engine::Instance().play();
     glutPostRedisplay();
-    
 }
 
 void display()

@@ -1,8 +1,8 @@
 #pragma once
-#include "Text.h"
-#include "Map.h"
 //#include "Ball.h"
 #include "Module.h"
+#include "Text.h"
+#include "Map.h"
 #include "Ninja.h"
 /*
  Engine provides all the application
@@ -28,6 +28,7 @@ public:
 	void gameOver(const char* also);
 	Ninja* getNinja(){return man;}
 	GameCore();
+	virtual void send(map<string, void*> params);
 	virtual void keyPressed(int Key);
 	virtual void keyReleased(int Key);
 	virtual void Init();

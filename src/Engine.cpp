@@ -4,6 +4,7 @@
 Engine::Engine()
 {
 	mgr.Register("game",&game);
+	mgr.Register("final",&fin);
 	mgr.Start("game");
 }
 
