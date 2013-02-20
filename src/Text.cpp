@@ -49,10 +49,10 @@ void Text::renderTexture(){
 					, g.bitmap.buffer + pitch * row, pitch);
 				else
 					for(int b = 0; b < pitch; b++){
-						if(data[left + texWidth*(row + fontHeight -  g.bitmap_top) + b] + g.bitmap.buffer[pitch * row + b] < UCHAR_MAX)
-							data[left + texWidth*(row + fontHeight -  g.bitmap_top) + b] += g.bitmap.buffer[pitch * row + b];
+						if(data[left + texWidth*(row + fontHeight -  g.bitmap_top + top) + b] + g.bitmap.buffer[pitch * row + b] < UCHAR_MAX)
+							data[left + texWidth*(row + fontHeight -  g.bitmap_top + top) + b] += g.bitmap.buffer[pitch * row + b];
 						else
-							data[left + texWidth*(row + fontHeight -  g.bitmap_top) + b] = UCHAR_MAX;
+							data[left + texWidth*(row + fontHeight -  g.bitmap_top + top) + b] = UCHAR_MAX;
 					}
 			}
 			left += g.bitmap.width;
@@ -64,6 +64,7 @@ void Text::renderTexture(){
 	
 	glBindTexture(GL_TEXTURE_2D,textureNum);
 	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, texWidth, texHeight, GL_RED, GL_UNSIGNED_BYTE, data);
+	delete data;
 }
 	Text* Text::setText(std::string newText){
 		text = newText;

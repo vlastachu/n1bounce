@@ -5,6 +5,7 @@
 #include "defs.h"
 #include "lodepng.h"
 
+unsigned Graphics::retWidth, Graphics::retHeight;
 void Graphics::color(float R,float G,float B)
 {
 	glColor3f(R,G,B);
@@ -23,7 +24,7 @@ void Graphics::circle(float X, float Y, float R)
 
 void Graphics::rectangle(float X,float Y,float W,float H)
 {
-	glBegin(GL_LINE_LOOP);
+	glBegin(GL_QUADS);
 		glVertex2f(X,Y);
 		glVertex2f(X+W,Y);
 		glVertex2f(X+W,Y+H);
@@ -46,9 +47,8 @@ float Graphics::radian(float a)
 unsigned Graphics::png2tex(const char* name)
 {
 	unsigned char* data;
-	unsigned width, height;
 	unsigned texture;
-	lodepng_decode32_file(&data, &width, &height, name);
+	lodepng_decode32_file(&data, &retWidth, &retHeight, name);
 
 	glGenTextures(1,&texture);
 	glBindTexture(GL_TEXTURE_2D,texture);
@@ -58,7 +58,7 @@ unsigned Graphics::png2tex(const char* name)
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);*/
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, retWidth, retHeight, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	//glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,width,height,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
 	delete data;
 	return texture;

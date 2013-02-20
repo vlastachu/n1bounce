@@ -4,6 +4,7 @@
 #include "Text.h"
 #include "Map.h"
 #include "Ninja.h"
+#include "Background.h"
 /*
  Engine provides all the application
  This class agregating the Map and the Ball objects
@@ -19,6 +20,7 @@ class GameCore:public Module
 	bool _gameOver;
 	bool _key;
 	Text *text;
+	Background *back1, *back2, *back3;
 public:
 	float toX(float X);
 	float toY(float Y);

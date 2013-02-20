@@ -37,6 +37,11 @@ void GameCore::keyReleased(int Key)
 
 void GameCore::Init()
 {
+	back1 = (new Background())->setTexture("../data/sun.png")->setX(0.0);
+	back2 = (new Background())->setTexture("../data/mountains.png")->setX(0.0001)->setY(80);
+	back3 = (new Background())->setTexture("../data/groundc.png")->setX(0.0006)->setY(379);
+
+
 	EventManager::Instance().Register(this);
 	scale=1;
 	score = 0;
@@ -55,6 +60,7 @@ void GameCore::Init()
 
 void GameCore::Clear()
 {
+
 }
 
 void GameCore::gameOver(const char* also){
@@ -64,6 +70,9 @@ void GameCore::gameOver(const char* also){
 
 void GameCore::Run()
 {
+	back1->draw();
+	back2->draw();
+	back3->draw();
 	man->move();
 	man->draw();
 	g_map->move();
