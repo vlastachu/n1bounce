@@ -1,18 +1,7 @@
 #pragma once
-
-#include "EventManager.h"
 #include "Graphics.h"
 #include "GameCore.h"
 
-//#include "Leg.h"
-//#include <vector>
-//using namespace std;
-//#define vector std::vector
-
-
-//class Leg;
-//class Animation;
-//class AnimManager;
 class GameCore;
 class Ninja
 {
@@ -24,7 +13,7 @@ class Ninja
 
 	GameCore* parent;
 	float phase;
-	float speed;
+	
 	int state;	
 	struct Element 
 	{
@@ -37,11 +26,11 @@ public:
 	{
 		borderY=Y;
 	};
-	bool air;
 	void jump();
+	void slide();
 	//void mapCollise(float Y,float H, int Id);
 	Ninja(GameCore* Parent);
-	float x,y,r;
+	float x,y,r,h;//TODO: getter/setter
 	//int getState(){return state;}
 	void setState(int State){state=State;phase=0;};
 	void init();

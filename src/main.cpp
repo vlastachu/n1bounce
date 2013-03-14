@@ -1,12 +1,9 @@
-#include <iostream>
-using namespace std;
-#include "defs.h"
+#include <vector> // WTFFFFF??????????????
+#include <GL\glut.h>
 #include "Engine.h"
-#include <time.h>
-#include <vector>
-#include "EventManager.h"
 
-void reshape(int w, int h)
+
+void reshape(int Width,int Height)
 {
 }
 
@@ -31,33 +28,43 @@ void display()
 {
 	glutSwapBuffers();
 	glClear(GL_COLOR_BUFFER_BIT);
-	glClearColor(1.0 ,1.0, 1.0, 0.0);
+	glClearColor(1.0 ,1.0, 1.0, 1.0);
 }
 
-EventManager e_mgr;
 
-void keyPressed (unsigned char key, int x, int y) 
+void keyPressed(int Key,int,int) 
 {  
-	e_mgr.keyPressed(key);
+	Engine::Instance().keyPressed(Key);
+}
+
+void keyReleased(int Key,int,int)
+{
+	Engine::Instance().keyReleased(Key);
 }
 
 
 
 int main (int argc, char * argv[])
 {
-	srand ( time(NULL) );
+	
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGB);
+
+	glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA);
+
 	glutInitWindowSize(WIDTH, HEIGHT);
-	glutCreateWindow("Mouse");
+	glutCreateWindow("Crysis");
 	glOrtho (0, WIDTH, HEIGHT, 0, -1, 1);
+
 	glutDisplayFunc(display);
 	glutTimerFunc(30, TimerFunction, 1);
 	glutMouseFunc(mouse);
 	glutPassiveMotionFunc(motion);
-	glutKeyboardFunc(keyPressed);
-	e_mgr.Add(Engine::Instance().getGame()->getBall());
+	glutSpecialFunc(keyPressed);
+	glutSpecialUpFunc(keyReleased);
+	glutReshapeFunc(reshape);
 	
+	Engine::Instance();
+
 	glutMainLoop();
 
 	return 0;

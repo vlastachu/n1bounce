@@ -1,26 +1,38 @@
 #pragma once
 #include "Map.h"
-#include "Ball.h"
 #include "Module.h"
-/*
- Engine provides all the application
- This class agregating the Map and the Ball objects
- TODO: singleton
-*/
+#include "Ninja.h"
+#include "Font.h"
 
+class Map;
+class Ninja;
+class Font;
 class GameCore:public Module
 {
-	Map g_map;
-	Ball ball;
+	Ninja* man;
+	Map* g_map;
 	int score;
-	void gameOver(char* also);
-public:
-	GameCore();
-	Ball* getBall(){
-		return &ball;
-	}
+	bool _gameOver;
+	bool _key;
+	bool _pause;
 	void glutPrint(float x, float y, void* font, string text);
+	
+	float yScaleAxis;
+public:
+	float xScaleAxis;
+	float toX(float X);
+	float toY(float Y);
+	float toL(float L);
+	float speed;
+	float scale;
+	void gameOver(const char* also);
+	Ninja* getNinja(){return man;}
+	Map* getMap(){return g_map;}
+	GameCore();
+	virtual void keyPressed(int Key);
+	virtual void keyReleased(int Key);                 //TODO: niceeeer!!! and no _key here!!!
 	virtual void Init();
 	virtual void Run();
 	virtual void Clear();
 };
+

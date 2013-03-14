@@ -1,37 +1,73 @@
-#include "GameCore.h"
-#include "Map.h"
-#include "Ball.h"
-#include "defs.h"
 #include <iostream>
-//#include "EventManager.h"
-///coment
+#include <time.h>
+#include <GL\glut.h>
+#include "GameCore.h"
+#include "Engine.h"
+
+
 GameCore::GameCore()
 {
+	g_map=new Map(this);
+	man=new Ninja(this);
 }
 
+void GameCore::keyPressed(int Key)
+{
+	if(!_key)
+	{
+		switch(Key)
+		{
+		case GLUT_KEY_UP:
+			man->jump();
+			break;
+		case GLUT_KEY_DOWN:
+			man->slide();
+			break;
+		case GLUT_KEY_RIGHT:
+			speed++;
+			break;
+		case GLUT_KEY_LEFT:
+			_pause=true;
+			break;
+		}
+		_key=true;
+	}
+}
+
+void GameCore::keyReleased(int Key)
+{
+	_key=false;
+}
 
 void GameCore::Init()
 {
-	//e_mgr.Add(&ball);
-	g_map.init();
-	ball.init();
+	xScaleAxis=HEIGHT*0.4; //def
+	yScaleAxis=HEIGHT;
+
+	scale=1;
+	score = 0;
+	speed = HEIGHT/40;  //def
+	_gameOver=false;
+	_key=false;
+	_pause=false;
+	g_map->init();
+	man->init();
+
+	srand (time(NULL));
 }
 
 void GameCore::Clear()
 {
-	g_map.clear();
 }
 
-void GameCore::gameOver(char* also){
+void GameCore::gameOver(const char* also){
 		std::cout << "GAME OVER! Try again." << also << "\n";
-		score = 0;
-		g_map.clear();
-		g_map.init();
-		ball.init();
+		_gameOver=true;
 }
 
 void GameCore::glutPrint(float x, float y, void* font, string text) 
-{ 
+{
+	glColor3f(0.0,0.7,0.5);
     glRasterPos2f(x,y); 
     for (int i=0; i<text.size(); i++)
     {
@@ -40,44 +76,42 @@ void GameCore::glutPrint(float x, float y, void* font, string text)
 }
 void GameCore::Run()
 {
-	g_map.move();
-	g_map.draw();
-	ball.move();
-	ball.draw();
+	man->move();
+	man->draw();
+	g_map->move();
+	g_map->draw();
 	
-	//score:
+	scale=0.15;//1-(yScaleAxis-man->y)/(HEIGHT * 3);  //TODO: exp() function or smth like that
+	//speed+=1;~1/20
+
 	score++;
-	string sScore = "score: ";
+	string sScore = "Score: ";
 	char chScore[10]; itoa(score,chScore,10);
 	sScore+=chScore;
-	glutPrint(800,20,GLUT_BITMAP_TIMES_ROMAN_24,sScore);
-	
-	
-	ball.setborder(HEIGHT + 1); 
-	std::list<FixedMapShape*> Plat = g_map.getPlatforms();
-	for(std::list<FixedMapShape*>::iterator it = Plat.begin(); it != Plat.end(); it++){
-		FixedMapShape* platform = *it;
-		if(platform->getx()-7 < ball.getx() && platform->getx() + platform->getw() > ball.getx()) //laa'ag
-		{
-			ball.setborder(platform->gety());
-		}
-	}
+	//glutPrint(800,20,GLUT_BITMAP_TIMES_ROMAN_24,sScore);
+	Engine::Instance().getFont()->outTextXY(sScore.c_str(),WIDTH-300,10,1.5);
 
-	std::list<FixedMapShape*> Tr = g_map.getTraps();
-	for(std::list<FixedMapShape*>::iterator it = Tr.begin(); it != Tr.end(); it++){
-		FixedMapShape* trap = *it;
-		if(trap->getx() < ball.getx() && trap->getx() + trap->getw() > ball.getx()
-			&& trap->gety() - trap->geth() < ball.gety() && trap->gety() > ball.gety())
-			{
-				std::cout<<Tr.size()<<"\n";
-				std::cout<<g_map.getShapes().size();
-				gameOver("trap");
-				
-			}
-	}
-	
-	if(ball.gety() >= HEIGHT)
+	if(_gameOver)
+		Init();
+	if(_pause)
 	{
-		gameOver("deadline");
+		_pause=false;
+		mgr->setModule("pause",true);
 	}
 }
+
+float GameCore::toX(float X)
+{
+	return xScaleAxis+(X-xScaleAxis)*scale;
+}
+
+float GameCore::toY(float Y)
+{
+	return yScaleAxis+(Y-yScaleAxis)*scale;
+}
+
+float GameCore::toL(float L)
+{
+	return L*scale;
+}
+
