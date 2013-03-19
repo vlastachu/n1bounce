@@ -1,13 +1,12 @@
 #include "Engine.h"
-#include "Map.h"
-#include "Ball.h"
-#include "defs.h"
-#include <iostream>
+
 
 Engine::Engine()
 {
+	mgr.Register("menu",&menu);
 	mgr.Register("game",&game);
-	mgr.Start("game");
+	mgr.Register("final",&fin);
+	mgr.Start("menu");
 }
 
 Engine& Engine::Instance()
@@ -16,11 +15,11 @@ Engine& Engine::Instance()
         return theSingleInstance;
 }
 
-void Engine::gameOver(char* also){
-		std::cout << "GAME OVER! Try again." << also << "\n";
-		mgr.Stop("game");
-		mgr.Start("game");
-}
+//void Engine::gameOver(char* also){
+//		std::cout << "GAME OVER! Try again." << also << "\n";
+//		mgr.Stop("game");
+//		mgr.Start("game");
+//}
 
 void Engine::play()
 {

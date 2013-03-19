@@ -1,20 +1,32 @@
 #pragma once
-#include <vector>
-#include "GraphicShape.h"
-
+#include "Module.h"
 class EventManager
 {
-	vector<GraphicShape*> listeners;
+	Module* m;
 public:
-	void Add(GraphicShape* GS)
+	void Register(Module* M)
 	{
-		listeners.push_back(GS);
+		m=M;
 	}
-	void keyPressed (unsigned char key) 
+	void keyPressed(int Key)
 	{  
-		for(vector<GraphicShape*>::iterator it=listeners.begin();it!=listeners.end();it++)
-		{
-			(*it)->keyPressed(key);
-		}
+		m->keyPressed(Key);
 	}
+	void keyReleased(int Key)
+	{
+		m->keyReleased(Key);
+	}
+	void mouse(int button, int state, int x, int y)
+	{
+		m->mouse(button, state, x, y);
+	}
+	void mousePasive(int x, int y)
+	{
+		m->mousePasive(x, y);
+	}
+	static EventManager& Instance()
+    {
+            static EventManager theSingleInstance;
+            return theSingleInstance;
+    }
 };

@@ -1,6 +1,9 @@
 #pragma once
 #include "GameCore.h"
 #include "ModuleManager.h"
+#include "Final.h"
+#include "Menu.h"
+#include "Module.h"
 /*
  Engine provides all the application
  This class agregating the Map and the Ball objects
@@ -10,17 +13,19 @@
 class Engine
 {
 private:
-	ModuleManager mgr;
 	GameCore game;
+	Final fin;
+	Menu menu;
 	Engine();
-	Engine(const Engine& root);
-	Engine& operator=(const Engine&);
-	void gameOver(char* also);
+	//Engine(const Engine& root);
+	//Engine& operator=(const Engine&);
+	//void gameOver(char* also);
 public:
+	ModuleManager mgr;
 	static Engine& Instance();
 	void play();
-	GameCore* getGame()
+	/*GameCore* getGame()
 	{
 		return &game;
-	}
+	}*/
 	};

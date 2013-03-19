@@ -1,96 +1,147 @@
-#include <list>
 #include "Map.h"
-#include "Engine.h"
-#include "Platform.h"
-#include "Trap.h"
-#include "defs.h"
 
-Map::Map()
-{}
+Map::Map(GameCore* Root)
+{
+	root=Root;
+}
 
 void Map::draw()
 {
-	for(std::list<FixedMapShape*>::iterator it = shapes.begin(); it != shapes.end(); it++)
+	
+	for(std::list<MapShape*>::iterator it = elements.begin(); it != elements.end(); it++)
 	{
 		(*it)->draw();
+	
 	}
 }
 
 void Map::init()
 {
-	speed = MAP_SPEED;
-	dist = 20;
-	shapes.push_back(new Platform(60,WIDTH+40,0));
-	randY = 30;
-	randW = 100 + rand()%150;	
+	for(std::list<MapShape*>::iterator it = elements.begin(); it != elements.end(); it++)
+	{
+		delete *it;
+	}
+	elements.clear();
+
+	Platform* p=new Platform(-100,500,WIDTH,root);       //    UNSAFE NULL->x
+	elements.push_back(p);
+	lastPlat=p;
 }
 
 void Map::move()
 {
-	if(dist == PLATFORM_DISTANCE)  // add new platform if distance from the last is /15/
-	{
-		deltaY = 60 + rand()%100;
-		if(randY + deltaY > 500) directionY = -1;
-		else if(randY - deltaY < 40) directionY = 1;
-		else directionY = rand()%3 - 1;
-		randY = randY + directionY * deltaY;
-		randW = 200 + rand()%50;
-		shapes.push_back(new Platform(randY, randW));
-		dist=0;
-		if(!(rand() % TRAP_CHANSE)){  // add trap on platform
-			shapes.push_back(new Trap(randY,WIDTH + rand()%(randW - 30)));
-		}
-	}
-	dist++;
 
-	if(!shapes.empty())  // erase the first platform, which out of the screen
+	if(root->toX(lastPlat->x + lastPlat->w - PLATFORM_DISTANCE) <= WIDTH)  
 	{
-		if((shapes.front()->getx() + shapes.front()->getw()) < 0)
+		float deltaY=rand()%150;
+		float directionY=rand()%2;
+		if(directionY==0) directionY=-1;
+		if(lastPlat->y+deltaY>500)
 		{
-			delete shapes.front();
-			shapes.erase(shapes.begin());// also delete here null pointers from platforms and traps
-
-			//and delete objects in pointers
-
+			directionY=-1;
+		}
+		else if(lastPlat->y-deltaY<40)
+		{
+			directionY=1;
+		}
+		
+		Platform* p=new Platform(lastPlat->x+lastPlat->w+200,lastPlat->y+directionY*deltaY,200+rand()%300,root);
+		lastPlat=p;
+		elements.push_back(p);
+		if(!(rand()%4))
+		{
+			elements.push_back(p->addTrap());
+		}
+		else if(p->w>350)
+		{
+			elements.push_back(p->addDB());
 		}
 	}
 
-	for(std::list<FixedMapShape*>::iterator it = shapes.begin(); it != shapes.end(); it++){
-		(*it)->move(speed);
+	if(!elements.empty())
+	{
+		if((elements.front()->x + elements.front()->w) < - WIDTH)//TODO: do it nicer
+		{
+			delete *elements.begin();
+			elements.erase(elements.begin());
+		}
+	}
+
+
+	root->getNinja()->setBorder(2*HEIGHT);
+	for(std::list<MapShape*>::iterator it = elements.begin(); it != elements.end(); it++)
+	{
+		(*it)->x-=root->speed;
+		(*it)->move();
 	}
 	
-
 }
 
-std::list<FixedMapShape*> Map::getPlatforms()
+
+
+
+//____MapShape____________________________________________________________________________________________________
+
+
+
+
+MapShape::MapShape(float X,float Y,float W,float H,int Id,GameCore* Root)
 {
-	std::list<FixedMapShape*> platforms;
-	for(std::list<FixedMapShape*>::iterator it = shapes.begin(); it != shapes.end(); it++){
-		if((*it)->getType() == platform)
-			platforms.push_back((*it));
-	}
-		return platforms;
-	
+	x=X;y=Y;w=W;h=H;id=Id,root=Root;
 }
 
-std::list<FixedMapShape*> Map::getTraps()
+void Trap::draw()
 {
-	std::list<FixedMapShape*> traps;
-	for(std::list<FixedMapShape*>::iterator it = shapes.begin(); it != shapes.end(); it++){
-		if((*it)->getType() == trap)
-			traps.push_back((*it));
-	}
-	return traps;
+	Graphics::color(1,0,0);
+	Graphics::rectangle(root->toX(x),root->toY(y),root->toL(w),root->toL(h));
 }
 
-std::list<FixedMapShape*> Map::getShapes()
+void Trap::move()
 {
-	return shapes;
+	if(x<root->getNinja()->x && x+w>root->getNinja()->x && y<=root->getNinja()->y && y+h>=root->getNinja()->y)
+	{
+		root->getNinja()->setState(5);
+	}
 }
 
-void Map::clear(){
-	for(std::list<FixedMapShape*>::iterator it = shapes.begin(); it != shapes.end(); it++){
-		delete *it;//hahaha
+Trap* Platform::addTrap()
+{
+	return new Trap(x+rand()%(int)(w-30),y-15,root);
+}
+
+DeathBall* Platform::addDB()
+{
+	return new DeathBall(x+w/4+rand()%int(w/2), y-50-root->getNinja()->r*2, 50, root);
+}
+
+void Platform::draw()
+{
+	Graphics::color(0,0,0);
+	Graphics::rectangle(root->toX(x),root->toY(y),root->toL(w),root->toL(h));
+}
+
+void Platform::move()
+{
+	if(x<root->getNinja()->x && x+w>root->getNinja()->x)
+	{
+		root->getNinja()->setBorder(y);
 	}
-	shapes.clear();
+}
+
+void DeathBall::draw()
+{
+	Graphics::color(0,0,1);
+	Graphics::circle(root->toX(x),root->toY(y),root->toL(r));
+	Graphics::rectangle(root->toX(x-5),0,root->toL(10),root->toY(y-r));
+}
+
+void DeathBall::move()
+{
+	float _x=root->getNinja()->x;
+	float _y=root->getNinja()->y;
+	float _h=root->getNinja()->h;
+	if( (_x-x)*(_x-x)+(_y-y)*(_y-y)<r*r || (_x-x)*(_x-x)+(_y-y-_h)*(_y-y-_h)<r*r)
+	{
+		root->getNinja()->setState(5);
+	}
 }

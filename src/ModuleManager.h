@@ -4,9 +4,9 @@
 #include <vector>
 #include <string>
 //using namespace std;
-#define string std::string
-#define map std::map
-#define vector std::vector
+using std::string;
+using std::map;
+using std::vector;
 class Module;
 class ModuleManager
 {
@@ -19,5 +19,6 @@ public:
 	void Run();
 	void Register(string name,Module* module);
 	void Start(string name);
+	void Start(string name,map<string, void*> params);
 	void Stop(string name);
 };

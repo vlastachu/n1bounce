@@ -1,9 +1,7 @@
 #include "ModuleManager.h"
-#include "Module.h"
-#include <map>
-#include <vector>
-#include <string>
-using namespace std;
+//#include "Module.h"
+
+//using namespace std;
 ModuleManager::ModuleManager()
 {
 	isDump=false;
@@ -11,7 +9,7 @@ ModuleManager::ModuleManager()
 
 void ModuleManager::Register(string name,Module* module)
 {
-	allModules.insert(pair<string,Module*>(name,module));
+	allModules.insert(std::pair<string,Module*>(name,module));
 }
 
 void ModuleManager::Start(string name)
@@ -19,9 +17,22 @@ void ModuleManager::Start(string name)
 	map<string,Module*>::iterator it=allModules.find(name);
 	if(it!=allModules.end())
 	{
-		activeModules.insert(pair<string,Module*>(name,it->second));
+		activeModules.insert(std::pair<string,Module*>(name,it->second));
 		it->second->setManager(this);//NULL->Init()
 		it->second->Init();//NULL->Init()
+	}
+}
+
+void ModuleManager::Start(string name,map<string, void*> params)
+{
+	map<string,Module*>::iterator it=allModules.find(name);
+	if(it!=allModules.end())
+	{
+		activeModules.insert(std::pair<string,Module*>(name,it->second));
+		it->second->setManager(this);//NULL->Init()
+		it->second->send(params);
+		it->second->Init();//NULL->Init()
+		
 	}
 }
 

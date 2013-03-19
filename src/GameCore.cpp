@@ -1,64 +1,125 @@
-#include "GameCore.h"
-#include "Map.h"
-#include "Ball.h"
-#include "defs.h"
 #include <iostream>
-//#include "EventManager.h"
+#include <GL\glut.h>
+#include "GameCore.h"
+#include "Text.h"
+#include "Engine.h"
 GameCore::GameCore()
 {
+	g_map=new Map(this);
+	man=new Ninja(this);
+}
+
+void GameCore::keyPressed(int Key)
+{
+	if(!_key)
+	{
+		switch(Key)
+		{
+		case GLUT_KEY_UP:
+			man->jump();
+			break;
+		case GLUT_KEY_DOWN:
+			man->slide();
+			break;
+		case GLUT_KEY_RIGHT:
+			speed++;
+			break;
+		}
+		_key=true;
+	}
+}
+
+void GameCore::keyReleased(int Key)
+{
+	_key=false;
 }
 
 void GameCore::Init()
 {
-	//e_mgr.Add(&ball);
-	g_map.init();
-	ball.init();
+	back1 = (new Background())->setTexture("../data/sun.png")->setX(0.0);
+	back2 = (new Background())->setTexture("../data/mountains.png")->setX(0.0001)->setY(80);
+	back3 = (new Background())->setTexture("../data/groundc.png")->setX(0.0006)->setY(379);
+
+
+	EventManager::Instance().Register(this);
+	scale=1;
+	score = 0;
+	speed = 10;
+	_gameOver=false;
+	_key=false;
+	g_map->init();
+	man->init();
+	text = (new Text())
+		->setFont("../fonts/Ubuntu-m.ttf",33)
+		->setShadow(true, 2, 2, 0.0, 0.38, 0.78,1.0)
+		->setX(700)
+		->setY(20)
+		->setColor(1.0, 0.615, 0.29,1.0);
 }
 
 void GameCore::Clear()
 {
-	g_map.clear();
+
 }
 
-void GameCore::gameOver(char* also){
+void GameCore::gameOver(const char* also){
 		std::cout << "GAME OVER! Try again." << also << "\n";
-		g_map.clear();
-		g_map.init();
-		ball.init();
+		_gameOver=true;
 }
 
 void GameCore::Run()
 {
-	g_map.move();
-	g_map.draw();
-	ball.move();
-	ball.draw();
-
-	ball.setborder(HEIGHT + 1); 
-	std::list<FixedMapShape*> Plat = g_map.getPlatforms();
-	for(std::list<FixedMapShape*>::iterator it = Plat.begin(); it != Plat.end(); it++){
-		FixedMapShape* platform = *it;
-		if(platform->getx()-7 < ball.getx() && platform->getx() + platform->getw() > ball.getx()) //laa'ag
-		{
-			ball.setborder(platform->gety());
-		}
-	}
-
-	std::list<FixedMapShape*> Tr = g_map.getTraps();
-	for(std::list<FixedMapShape*>::iterator it = Tr.begin(); it != Tr.end(); it++){
-		FixedMapShape* trap = *it;
-		if(trap->getx() < ball.getx() && trap->getx() + trap->getw() > ball.getx()
-			&& trap->gety() - trap->geth() < ball.gety() && trap->gety() > ball.gety())
-			{
-				std::cout<<Tr.size()<<"\n";
-				std::cout<<g_map.getShapes().size();
-				gameOver("trap");
-				
-			}
-	}
+	back1->draw();
+	back2->draw();
+	back3->draw();
+	man->move();
+	man->draw();
+	g_map->move();
+	g_map->draw();
+	/*ball.move();
+	ball.draw();*/
 	
-	if(ball.gety() >= HEIGHT)
-	{
-		gameOver("deadline");
+	scale=1-(YSCALE_AXIS-man->y)/(HEIGHT*2);
+	//score:
+	score++;
+	string sScore = "score: ";
+	char chScore[10]; itoa(score,chScore,10);
+	sScore+=chScore;
+	text->setText(sScore)->draw();
+	
+	/*glEnable(GL_BLEND);
+	glColor4f(0.0,1.0,0.0,0.2);
+	glBegin(GL_LINES);
+		glVertex2f(XSCALE_AXIS , 0);
+		glVertex2f(XSCALE_AXIS , HEIGHT);
+		glVertex2f(0 , YSCALE_AXIS);
+		glVertex2f(WIDTH , YSCALE_AXIS);
+	glEnd();
+	glDisable(GL_BLEND);*/
+
+	if(_gameOver){
+		map<string,void*> n;
+		n.insert(std::pair<string,void*>("score",&score));
+		Engine::Instance().mgr.Stop("game");
+		Engine::Instance().mgr.Start("final",n);
 	}
+}
+
+float GameCore::toX(float X)
+{
+	return XSCALE_AXIS+(X-XSCALE_AXIS)*scale;
+}
+
+float GameCore::toY(float Y)
+{
+	return YSCALE_AXIS+(Y-YSCALE_AXIS)*scale;
+}
+
+float GameCore::toL(float L)
+{
+	return L*scale;
+}
+
+void GameCore::send(map<string, void*> params){
+
 }
