@@ -1,6 +1,4 @@
 
-#include <GL/glew.h>
-#include <GL\glu.h>
 #include "Graphics.h"
 #include "defs.h"
 #include "lodepng.h"
@@ -9,6 +7,11 @@ unsigned Graphics::retWidth, Graphics::retHeight;
 void Graphics::color(float R,float G,float B)
 {
 	glColor3f(R,G,B);
+}
+
+void Graphics::color(Color4f c)
+{
+	glColor4f(c.red,c.green,c.blue,c.alpha);
 }
 
 void Graphics::circle(float X, float Y, float R)
@@ -29,6 +32,78 @@ void Graphics::rectangle(float X,float Y,float W,float H)
 		glVertex2f(X+W,Y);
 		glVertex2f(X+W,Y+H);
 		glVertex2f(X,Y+H);
+	glEnd();
+}
+
+void Graphics::roundedRectangle(float X,float Y,float W,float H, float R)
+{
+	if (R == 0)
+	{
+		rectangle(X, Y, W, H);
+		return;
+	}
+	glBegin(GL_TRIANGLE_FAN);
+
+		glVertex2f(X + W/2,Y + H/2);//center
+		glVertex2f(X, Y + H - R);
+		for(int i = 180; i < 270; i += 5)
+		{
+			float a = radian(i);
+			glVertex2f(cos(a)*R + X + R,sin(a)*R + Y + R);
+		}
+		for(int i = 270; i < 360; i += 5)
+		{
+			float a = radian(i);
+			glVertex2f(cos(a)*R + X + W - R,sin(a)*R + Y + R);
+		}
+		for(int i = 0; i < 90; i += 5)
+		{
+			float a = radian(i);
+			glVertex2f(cos(a)*R + X + W - R,sin(a)*R + Y + H - R);
+		}
+		for(int i = 90; i < 180; i += 5)
+		{
+			float a = radian(i);
+			glVertex2f(cos(a)*R + X + R,sin(a)*R + Y + H - R);
+		}
+		glVertex2f(X, Y + H - R);
+	glEnd();
+}
+
+void Graphics::roundedRectangle(float X,float Y,float W,float H, float R,Color4f c1,Color4f c2)
+{
+	if (R == 0)
+	{
+		rectangle(X, Y, W, H);
+		return;
+	}
+	glBegin(GL_TRIANGLE_FAN);
+		//glVertex2f(X + W/2,Y + H/2);//center
+		color(c2);
+		glVertex2f(X, Y + H - R);
+		color(c1);
+		for(int i = 180; i < 270; i += 5)
+		{
+			float a = radian(i);
+			glVertex2f(cos(a)*R + X + R,sin(a)*R + Y + R);
+		}
+		for(int i = 270; i < 360; i += 5)
+		{
+			float a = radian(i);
+			glVertex2f(cos(a)*R + X + W - R,sin(a)*R + Y + R);
+		}
+		color(c2);
+		for(int i = 0; i < 90; i += 5)
+		{
+			float a = radian(i);
+			glVertex2f(cos(a)*R + X + W - R,sin(a)*R + Y + H - R);
+		}
+		for(int i = 90; i < 180; i += 5)
+		{
+			float a = radian(i);
+			glVertex2f(cos(a)*R + X + R,sin(a)*R + Y + H - R);
+		}
+		glVertex2f(X, Y + H - R);
 	glEnd();
 }
 
@@ -89,6 +164,8 @@ void Graphics::draw(float X,float Y,float W,float H,float Rot,unsigned Texture)
 	glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_2D);
 }
+
+
 
 void Graphics::draw(float X,float Y,float W,float H,unsigned Texture)
 {

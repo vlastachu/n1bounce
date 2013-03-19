@@ -1,33 +1,39 @@
+#define __ARB_ENABLE true
 #include "Text.h"
 #include <wchar.h>
 #include <ft2build.h>
 #include <limits>
 #include <list>
-#include <GL/glew.h>
 #include "defs.h"
-void Text::renderTexture(){
-	//немного бесполезный труд, но что поделать
-	//высчитаю конечную ширину текстуры и округлю до степени двойки
-	fontWidth = texHeight = texWidth = 20;//таки погрешность 
-	texHeight = fontHeight = font->getSize();	
-	GlyphCash g;
-    for(unsigned int i = 0; i < text.size(); i++){
-		if(text[i] == ' ') fontWidth += wordSpacing; else
-		if(text[i] == '\n') texHeight += font->getSize() + lineSpacing; else
-		{
-			g = font->renderChar(text[i]);
-			fontWidth += g.bitmap.width;//->advance.x >> 6;  вот отсюда растёт погрешность. костыль так сказать
-			fontWidth += g.bitmap_left;
-			fontWidth += letterSpacing;
-			if(kerning && i > 1)
-				fontWidth += font->getKerning(text[i-1],text[i]);
+
+	Text* Text::calculateSizes(){
+		//немного бесполезный труд, но что поделать
+		//высчитаю конечную ширину текстуры и округлю до степени двойки
+		fontWidth = texHeight = texWidth = 20;//таки погрешность 
+		texHeight = fontHeight = font->getSize();	
+		GlyphCash g;
+		for(unsigned int i = 0; i < text.size(); i++){
+			if(text[i] == ' ') fontWidth += wordSpacing; else
+			if(text[i] == '\n') texHeight += font->getSize() + lineSpacing; else
+			{
+				g = font->renderChar(text[i]);
+				fontWidth += g.realW;//->advance.x >> 6;  вот отсюда растёт погрешность. костыль так сказать
+				fontWidth += g.bitmap_left;
+				fontWidth += letterSpacing;
+				if(kerning && i > 1)
+					fontWidth += font->getKerning(text[i-1],text[i]);
+			}
 		}
+		texHeight = addToPowerOfTwo(texHeight);
+		texWidth = addToPowerOfTwo(fontWidth);
+	return this;
 	}
-	texHeight = addToPowerOfTwo(texHeight);
-	texWidth = addToPowerOfTwo(fontWidth);
-	//TODO: calculating of hight width
-	int strSize = text.size();
-	unsigned char *data = new unsigned char[texHeight*texWidth];
+
+
+	/*void Font::renderTexture(){
+	//calculateSizes();
+		GlyphCash g;
+	unsigned char *data = new unsigned char[fontSize*fontSize*];
 	for(unsigned int i = 0; i < texHeight*texWidth;i++) data[i] = 0;
 	int left = 0, top = 0; 
 	for(unsigned int i = 0; i < strSize; i++){
@@ -58,14 +64,15 @@ void Text::renderTexture(){
 			left += g.bitmap.width;
 		}
 		
+	}*/
+	float Text::getHeight()
+	{
+		return (fontHeight*1.0 + 2*outline + shadowDy*1.0);
 	}
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR); // Linear Filtering
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR); 
-	
-	glBindTexture(GL_TEXTURE_2D,textureNum);
-	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, texWidth, texHeight, GL_RED, GL_UNSIGNED_BYTE, data);
-	delete data;
-}
+	float Text::getWidth()
+	{
+		return fontWidth;
+	}
 	Text* Text::setText(std::string newText){
 		text = newText;
 		changed = true;
@@ -86,44 +93,56 @@ void Text::renderTexture(){
 		changed = true;
 		return this;
 	}
-	void Text::draw(){
-		if(changed){
-			renderTexture();
-			changed = false;
+void Text::draw(){
+	glEnable (GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
+	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
+	glBindTexture(GL_TEXTURE_2D,font->texture);
+		if(outline!= 0.0)
+		{
+			glColor4f(outlineColor[0],outlineColor[1],outlineColor[2],outlineColor[3]);
+			int detalization = 4*((int)outline*(int)outline);
+			float Dx, Dy;
+			for(float i = 0.0; i <= PI*2; i += PI*2/detalization)
+			{
+				Dx = outline*cos(i), Dy = outline*sin(i);
+				drawText(Dx, Dy);
 			}
-		   glEnable (GL_TEXTURE_2D);
-		glEnable(GL_BLEND);
-		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-		GLint swizzleMask[] = {GL_ZERO, GL_ZERO, GL_ZERO, GL_RED};
-		glTexParameteriv(GL_TEXTURE_2D, 0x8E46, swizzleMask); // 0x8E46 is GL_TEXTURE_SWIZZLE_RGBA 
+		}
 		if(shadow)
 		{
 			glColor4f(shadowColor[0],shadowColor[1],shadowColor[2],shadowColor[3]);
-			glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
-			glBindTexture(GL_TEXTURE_2D,textureNum);		
-			glPixelStorei( GL_UNPACK_ALIGNMENT, 1 ); 
-			glBegin(GL_QUADS);
-			  glTexCoord2f(0.0f, 0.0f);glVertex2f(x + shadowDx, y + shadowDy); //top left
-			  glTexCoord2f(1.0f, 0.0f);glVertex2f(x + texWidth + shadowDx, y + shadowDy); //top right
-			  glTexCoord2f(1.0f, 1.0f);glVertex2f(x + texWidth + shadowDx,y + texHeight + shadowDy); // bottom right
-			  glTexCoord2f(0.0f, 1.0f);glVertex2f(x + shadowDx, y + texHeight + shadowDy); //bottom left
-			glEnd();
+			drawText(shadowDx,shadowDy);
 		}
 		glColor4f(color[0],color[1],color[2],color[3]);
-		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
-		glBindTexture(GL_TEXTURE_2D,textureNum);
-		
-		glPixelStorei( GL_UNPACK_ALIGNMENT, 1 ); 
-		glBegin(GL_QUADS);
-		  glTexCoord2f(0.0f, 0.0f);glVertex2f(x, y); //top left
-		  glTexCoord2f(1.0f, 0.0f);glVertex2f(x + texWidth, y); //top right
-		  glTexCoord2f(1.0f, 1.0f);glVertex2f(x + texWidth,y + texHeight); // bottom right
-		  glTexCoord2f(0.0f, 1.0f);glVertex2f(x ,y + texHeight); //bottom left
-		glEnd();
-		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-	}
+		drawText(0,0);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glDisable(GL_BLEND);
+	glDisable(GL_TEXTURE_2D);
+}
 	
+	void Text::drawText(int dx, int dy)
+	{
+		float left = 0, top = 0;
+		for(int i = 0; i < text.size(); i++){
+			if(text.at(i) == ' ') left += wordSpacing; else
+				if(text.at(i) == '\n'){ top += fontHeight + lineSpacing; left = 0;}
+			else
+			{
+				GlyphCash g = font->renderChar(text[i]);
+				left += g.bitmap_left;
+				if(kerning && i > 0) left += font->getKerning(text[i-1],text[i]);
+				glBegin(GL_QUADS);
+					glTexCoord2f(g.texX, g.texY);glVertex2f(x + dx + left, y + dy +  g.bitmap_top +top); //top left
+					glTexCoord2f(g.texX + g.texW, g.texY);glVertex2f(x + dx + left + g.realW, y + dy + g.bitmap_top + top); //top right
+					glTexCoord2f(g.texX + g.texW, g.texY +g.texH);glVertex2f(x + dx + left + g.realW,y + dy + top + g.bitmap_top + g.realH); // bottom right
+					glTexCoord2f(g.texX, g.texY +g.texH);glVertex2f(x + dx + left, y + dy + top + g.bitmap_top + g.realH); //bottom left
+				glEnd();
+				left += g.realW;
+			}
+		}
+	}
 	
 	Text* Text::setShadow(bool onOff, int dx, int dy, float red, float green, float blue, float alpha)
 	{
@@ -134,6 +153,17 @@ void Text::renderTexture(){
 		shadowColor[1] = green;
 		shadowColor[2] = blue;
 		shadowColor[3] = alpha;
+		changed = true;
+		return this;
+	}
+	
+	Text* Text::setOutline(float out, float red, float green, float blue, float alpha)
+	{
+		outline = out;
+		outlineColor[0] = red;
+		outlineColor[1] = green;
+		outlineColor[2] = blue;
+		outlineColor[3] = alpha;
 		changed = true;
 		return this;
 	}
@@ -175,12 +205,15 @@ void Text::renderTexture(){
 		return this;
 	}
 	Text::Text(){
+	    setFont("../fonts/Ubuntu-m.ttf",33); //такое вот умолчание
+		shadowDx = shadowDy = 0.0;
 		kerning = false;
 		changed = true;
 		color[0] = 0.;
 		color[1] = 0.;
 		color[2] = 0.;
 		color[3] = 1.;
+		outline = 0.0;
 		wordSpacing = 15;
 		letterSpacing = 0;
 		lineSpacing = 20;

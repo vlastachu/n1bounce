@@ -24,5 +24,7 @@ public:
 	virtual void Clear(){}
 	virtual void keyPressed(int Key){}
 	virtual void keyReleased(int Key){}
+	virtual void mouse(int button, int state, int x, int y){};
+	virtual void mousePasive(int x, int y){}
 	virtual void send(map<string, void*> params){}
 };

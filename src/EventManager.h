@@ -16,6 +16,14 @@ public:
 	{
 		m->keyReleased(Key);
 	}
+	void mouse(int button, int state, int x, int y)
+	{
+		m->mouse(button, state, x, y);
+	}
+	void mousePasive(int x, int y)
+	{
+		m->mousePasive(x, y);
+	}
 	static EventManager& Instance()
     {
             static EventManager theSingleInstance;

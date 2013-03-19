@@ -2,6 +2,7 @@
 #include "GameCore.h"
 #include "ModuleManager.h"
 #include "Final.h"
+#include "Menu.h"
 #include "Module.h"
 /*
  Engine provides all the application
@@ -14,6 +15,7 @@ class Engine
 private:
 	GameCore game;
 	Final fin;
+	Menu menu;
 	Engine();
 	//Engine(const Engine& root);
 	//Engine& operator=(const Engine&);

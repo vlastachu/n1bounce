@@ -3,9 +3,10 @@
 
 Engine::Engine()
 {
+	mgr.Register("menu",&menu);
 	mgr.Register("game",&game);
 	mgr.Register("final",&fin);
-	mgr.Start("game");
+	mgr.Start("menu");
 }
 
 Engine& Engine::Instance()

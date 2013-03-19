@@ -1,5 +1,4 @@
 #include <iostream>
-#include <GL/glew.h>
 #include <GL\glut.h>
 #include "GameCore.h"
 #include "Text.h"

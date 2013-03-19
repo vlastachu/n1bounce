@@ -1,10 +1,14 @@
-#include <vector> // WTFFFFF??????????????
-#include <GL\glew.h>
+#include "defs.h"
+#include <stdlib.h>
+#include <Windows.h>
 #include <GL\glut.h>
 
 #include <time.h>
 #include "Engine.h"
-
+#pragma comment(lib, "freetype.lib")
+#pragma comment(lib, "glut32.lib")
+#pragma comment(lib, "glu32.lib")
+#pragma comment(lib, "opengl32.lib")
 
 void reshape(int w, int h)
 {
@@ -14,9 +18,6 @@ void motion(int X,int Y)
 {
 }
 
-void mouse(int button, int state, int x, int y)
-{
-}
 
 
 void TimerFunction(int value)
@@ -44,7 +45,13 @@ void keyReleased(int Key,int,int)
 	EventManager::Instance().keyReleased(Key);
 }
 
+void mouse(int button, int state, int x, int y){
+	EventManager::Instance().mouse(button, state, x, y);
+}
 
+void mousePasive(int x, int y){
+	EventManager::Instance().mousePasive(x, y);
+}
 
 int main (int argc, char * argv[])
 {
@@ -53,7 +60,6 @@ int main (int argc, char * argv[])
 	glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA);
 	glutInitWindowSize(WIDTH, HEIGHT);
 	glutCreateWindow("Crysis");
-	glewInit();
 	glOrtho (0, WIDTH, HEIGHT, 0, -1, 1);
 	glEnable (GL_TEXTURE_2D);
 	glEnable (GL_BLEND);
@@ -65,7 +71,8 @@ int main (int argc, char * argv[])
 	glutPassiveMotionFunc(motion);
 	glutSpecialFunc(keyPressed);
 	glutSpecialUpFunc(keyReleased);
-
+	glutMouseFunc(mouse);
+	glutPassiveMotionFunc (mousePasive);
 	Engine::Instance();
 
 	glutMainLoop();

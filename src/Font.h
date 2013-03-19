@@ -6,11 +6,12 @@
 #include "defs.h"
 
 struct GlyphCash{
-		FT_Bitmap bitmap;
+		float texX, texY, texW,texH,realW,realH;
+
 		int bitmap_left;
 		int bitmap_top;
-		GlyphCash(FT_Bitmap bitmap_, int left, int top);
-		GlyphCash();
+		GlyphCash(float x, float y, float w, float h,float rw, float rh, int left, int top):texX(x),texY(y), texW(w),texH(h),realW(rw),realH(rh),bitmap_left(left),bitmap_top(top){}
+		GlyphCash(){}
 	};
 
 class Font{
@@ -23,7 +24,9 @@ private:
 	static bool isInit;
 	FT_Face face;
 	Font(std::string name,int size);
+	void renderTexture();
 public:
+	GLuint texture;
 	GlyphCash renderChar(char c);
 	static Font* getFont(std::string fileName,int size);  //get font from ttf file
 	int getSize();

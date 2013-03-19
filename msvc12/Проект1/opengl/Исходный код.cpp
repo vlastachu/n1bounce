@@ -7,7 +7,6 @@
 #include <limits>
 #include FT_FREETYPE_H
 
-
 FT_Library ft;	
 FT_Face face;
 const char *fontfilename = "C:/Users/vlastachu/Documents/Carrington.ttf";
@@ -93,9 +92,6 @@ void makeTexture(){
 	}
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR); // Linear Filtering
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR_MIPMAP_LINEAR); // Linear Filtering
-	GLfloat swizzleMask[] = { 0,0,0, GL_RED};
-	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
-	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 ); 
 	glColor4f(0.2,0.4,0.8,1.);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
 	/*glTexImage2D( GL_TEXTURE_2D, 
@@ -112,16 +108,17 @@ void makeTexture(){
     GL_RGBA, 
     64*strSize, 
     128, 
-    GL_RED, 
+    GL_ALPHA, 
     GL_UNSIGNED_BYTE, 
     data
 );
+	
 }
 void display()
 {
-	glClear(GL_COLOR_BUFFER_BIT);
 	glClearColor(1.0 ,1.0, 1.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
     //glLoadIdentity();//load identity matrix
     	//glTexImage2D( GL_TEXTURE_2D, 
   //            0, 
@@ -142,24 +139,42 @@ void display()
 //    GL_UNSIGNED_BYTE, 
 //    data
 //);
-		
-	//glBindTexture(GL_TEXTURE_2D,tex);
-	//	glBegin(GL_QUADS);
-	//	  glTexCoord2f(0.0f, 0.0f);glVertex3f(-0.9f,0.0,0.0f); //top left
-	//	  glTexCoord2f(1.0f, 0.0f);glVertex3f(0.05f*strSize - 0.9,0.0f,0.0f); //top right
-	//	  glTexCoord2f(1.0f, 1.0f);glVertex3f(0.05f*strSize - 0.9,-0.05f*strSize,0.0f); // bottom right
-	//	  glTexCoord2f(0.0f, 1.0f);glVertex3f(-0.9f,-0.05f*strSize,0.0f); //bottom left
-	//	glEnd();
-		
+		float dx = .2, dy = .2,x = 20, y = 10, w = 32*85, h = 64;
+	glBindTexture(GL_TEXTURE_2D,tex);
+	glColor4f(0,0.7,0.7,1);
+		glBegin(GL_QUADS);
+		  glTexCoord2f(0.0f, 0.0f);glVertex2f(x+dx,y+dy); //top left
+		  glTexCoord2f(1.0f, 0.0f);glVertex2f(x+dx + w,y+dy); //top right
+		  glTexCoord2f(1.0f, 1.0f);glVertex2f(x+dx + w,y+dy + h); // bottom right
+		  glTexCoord2f(0.0f, 1.0f);glVertex2f(x+dx ,y+dy + h); //bottom left
+		glEnd();
+		glBegin(GL_QUADS);
+		  glTexCoord2f(0.0f, 0.0f);glVertex2f(x-dx,y+dy); //top left
+		  glTexCoord2f(1.0f, 0.0f);glVertex2f(x-dx + w,y+dy); //top right
+		  glTexCoord2f(1.0f, 1.0f);glVertex2f(x-dx + w,y + h+dy); // bottom right
+		  glTexCoord2f(0.0f, 1.0f);glVertex2f(x-dx ,y + h+dy); //bottom left
+		glEnd();
+		glBegin(GL_QUADS);
+		  glTexCoord2f(0.0f, 0.0f);glVertex2f(x-dx,y-dy); //top left
+		  glTexCoord2f(1.0f, 0.0f);glVertex2f(x-dx + w,y-dy); //top right
+		  glTexCoord2f(1.0f, 1.0f);glVertex2f(x-dx + w,y-dy + h); // bottom right
+		  glTexCoord2f(0.0f, 1.0f);glVertex2f(x-dx ,y-dy + h); //bottom left
+		glEnd();
+		glBegin(GL_QUADS);
+		  glTexCoord2f(0.0f, 0.0f);glVertex2f(x+dx,y-dy); //top left
+		  glTexCoord2f(1.0f, 0.0f);glVertex2f(x+dx + w,y-dy); //top right
+		  glTexCoord2f(1.0f, 1.0f);glVertex2f(x+dx + w,y + h-dy); // bottom right
+		  glTexCoord2f(0.0f, 1.0f);glVertex2f(x+dx ,y + h-dy); //bottom left
+		glEnd();
 	glBindTexture(GL_TEXTURE_2D,tex);
 
-		glBegin(GL_QUADS);
-		  glTexCoord2f(0.0f, 0.0f);glVertex2f(20,10); //top left
-		  glTexCoord2f(1.0f, 0.0f);glVertex2f(20 + 32*85,10); //top right
-		  glTexCoord2f(1.0f, 1.0f);glVertex2f(20 + 32*85,10 + 64); // bottom right
-		  glTexCoord2f(0.0f, 1.0f);glVertex2f(20,10 + 64); //bottom left
+		glBegin(GL_QUADS); 
+		  glColor4f(0.0,0.0,1,1.);
+		  glTexCoord2f(0.3f, 0.2f);glVertex2f(x+dx,y-dy); //top left
+		  glTexCoord2f(0.6f, 0.2f);glVertex2f(x+dx + w,y-dy); //top right
+		  glTexCoord2f(0.6f, 0.4f);glVertex2f(x+dx + w,y + h-dy); // bottom right
+		  glTexCoord2f(0.3f, 0.4f);glVertex2f(x+dx ,y + h-dy); //bottom left
 		glEnd();
-
 	//glActiveTexture(GL_TEXTURE0);
 	//glBindTexture(GL_TEXTURE_2D, texture[0]);               // Select Our Texture
     
@@ -174,6 +189,7 @@ void TimerFunction(int value)
 }
 int main(int argc, char *argv[])
 {
+	int i = 4%4;
        glutInit(&argc, argv);
        glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
        glutInitWindowSize(800,600);

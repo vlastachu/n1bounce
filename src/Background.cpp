@@ -1,6 +1,5 @@
 #include "Background.h"
 #include "Graphics.h"
-#include <GL/glew.h>
 #include "defs.h"
 #include <iostream>
 Background::Background()

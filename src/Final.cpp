@@ -1,5 +1,4 @@
 #include "Text.h"
-#include <GL/glew.h>
 #include <GL\glut.h>
 #include "Final.h"
 #include "Engine.h"
@@ -9,7 +8,9 @@ void Final::Init(){
 	EventManager::Instance().Register(this);
 	std::stringstream sBest; sBest << "High score " << best;
 	std::stringstream sYour; sYour << "Your result " << your;
-
+	
+	menuButton = (new Button("menu", 250, 480))->setOnClick(toMenu);
+	againButton = (new Button("try again", 450, 480))->setOnClick(toGame);
 	postScriptum = (new Text)
 		->setFont("../fonts/Ubuntu-l.ttf",33)
 		->setText("I've just found out that the ninja died here just recently here")
@@ -37,6 +38,8 @@ void Final::Init(){
 		->setColor(0.9,0.5,0.4,1.0);
 
 }
+void Final::toMenu(Button* b){}
+void Final::toGame(Button* b){}
 
 void Final::send(map<string, void*> params){
 	map<string, void*>::iterator it = params.find("score");
@@ -55,7 +58,8 @@ void Final::Run(){
 	postScriptum->draw();
 	bestResult->draw();
 	yourResult->draw();
-	buttonR->draw();
+	againButton->draw();
+	menuButton->draw();
 }
 
 void Final::keyPressed(int key){

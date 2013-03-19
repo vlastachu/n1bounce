@@ -1,5 +1,4 @@
 #pragma once
-#include <GL/glew.h>
 #include <string>
 #include "defs.h"
 #include <ft2build.h>
@@ -21,14 +20,19 @@ private:
 			texHeight, texWidth; //size supplemented to power of two 
 	float color[4];
 	static int addToPowerOfTwo(int i);
+	void drawText(int dx, int dy);
 	GLuint textureNum;
-	bool shadow;
+	bool shadow; float outline;
 	int shadowDx, shadowDy;
-	float shadowColor[4];
+	float shadowColor[4], outlineColor[4];
 public:
+	float getHeight();
+	float getWidth();
 	Text* setShadow(bool onOff, int dx, int dy, float red, float green, float blue, float alpha);
+	Text* setOutline(float size, float red, float green, float blue, float alpha);
 	Text* setX(int x_);
 	Text* setY(int y_);
+	Text* calculateSizes();
 	Text* setColor(float red, float green, float blue, float alpha);
 	Text* setText(std::string newText);
 	Text* setLineSpacing(int n);
