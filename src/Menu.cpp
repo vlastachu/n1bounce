@@ -30,32 +30,9 @@ void Menu::Run()
 
 	//todo:hover
 }
-void Menu::mouse(int button, int state, int x, int y)
-{
-	float pointX = (float)x/glutGet(GLUT_WINDOW_WIDTH) * WIDTH;
-    float pointY = ((float)y/(float)glutGet(GLUT_WINDOW_HEIGHT)) * HEIGHT;
-	for(vector<Button*>::iterator i = buttons.begin(); i != buttons.end(); i++)
-	{
-		if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
-		{
-			(*i)->clickDown(pointX,pointY);
-		}
-		else if(button == GLUT_LEFT_BUTTON && state == GLUT_UP)
-		{
-			(*i)->clickUp(pointX,pointY);
-		}
-	}		
-}
 
-void Menu::mousePasive(int x, int y)
-{
-	float pointX = (float)x/glutGet(GLUT_WINDOW_WIDTH) * WIDTH;
-    float pointY = ((float)y/(float)glutGet(GLUT_WINDOW_HEIGHT)) * HEIGHT;
-	for(vector<Button*>::iterator i = buttons.begin(); i != buttons.end(); i++)
-	{
-		(*i)->hover(pointX,pointY);
-	}
-}
+
+
 void Menu::keyPressed(int Key)
 {
 

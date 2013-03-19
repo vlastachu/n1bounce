@@ -78,7 +78,7 @@ Button* Button::setOnHover(void _onHover(Button* f))
 Button::Button(string label, int x_, int y_)
 {
 	onClick = onHover = NULL;
-	text = (new Text())->setText(label)->setOutline(6.0,0.8,0.8,0.8,1)->setColor(0.3,0,0,1);//->setFont("../fonts/StencilStd.ttf",30);
+	text = (new Text())->setText(label)->setOutline(1,0.75,0.75,0.75,1)->setColor(0.3,0,0,1);//->setFont("../fonts/StencilStd.ttf",30);
 	padding = 5;
 	height = 20;
 	width = 240;

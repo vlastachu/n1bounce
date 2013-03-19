@@ -9,13 +9,10 @@ class Menu: public Module
 {
 private:
 	int currentButton;
-	vector<Button*> buttons;//campaign, *tournament, *options, *exit; 
 	bool _key;
 public:
 
 	Menu(){}
-	virtual void mouse(int button, int state, int x, int y);
-	virtual void mousePasive(int x, int y);
 	static void tourn(Button* b);
 	virtual void keyReleased(int Key);
 	virtual void Init();
