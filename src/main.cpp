@@ -1,6 +1,8 @@
+
 #include "defs.h"
 #include <stdlib.h>
 #include <Windows.h>
+#include <vector> // WTFFFFF??????????????
 #include <GL\glut.h>
 
 #include <time.h>

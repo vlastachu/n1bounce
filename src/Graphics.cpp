@@ -1,19 +1,29 @@
+<<<<<<< HEAD
 
+=======
+#include <GL\glu.h>
+>>>>>>> 6f577f6091c4cb8075629bed6f984bbb2234edac
 #include "Graphics.h"
 #include "defs.h"
 #include "lodepng.h"
 
+<<<<<<< HEAD
 unsigned Graphics::retWidth, Graphics::retHeight;
+=======
+>>>>>>> 6f577f6091c4cb8075629bed6f984bbb2234edac
 void Graphics::color(float R,float G,float B)
 {
 	glColor3f(R,G,B);
 }
 
+<<<<<<< HEAD
 void Graphics::color(Color4f c)
 {
 	glColor4f(c.red,c.green,c.blue,c.alpha);
 }
 
+=======
+>>>>>>> 6f577f6091c4cb8075629bed6f984bbb2234edac
 void Graphics::circle(float X, float Y, float R)
 {
 	glBegin(GL_LINE_LOOP);
@@ -27,7 +37,11 @@ void Graphics::circle(float X, float Y, float R)
 
 void Graphics::rectangle(float X,float Y,float W,float H)
 {
+<<<<<<< HEAD
 	glBegin(GL_QUADS);
+=======
+	glBegin(GL_LINE_LOOP);
+>>>>>>> 6f577f6091c4cb8075629bed6f984bbb2234edac
 		glVertex2f(X,Y);
 		glVertex2f(X+W,Y);
 		glVertex2f(X+W,Y+H);
@@ -35,6 +49,7 @@ void Graphics::rectangle(float X,float Y,float W,float H)
 	glEnd();
 }
 
+<<<<<<< HEAD
 void Graphics::roundedRectangle(float X,float Y,float W,float H, float R)
 {
 	if (R == 0)
@@ -107,6 +122,8 @@ void Graphics::roundedRectangle(float X,float Y,float W,float H, float R,Color4f
 	glEnd();
 }
 
+=======
+>>>>>>> 6f577f6091c4cb8075629bed6f984bbb2234edac
 void Graphics::line(float X1,float Y1,float X2,float Y2)
 {
 	glBegin(GL_LINE);
@@ -122,8 +139,14 @@ float Graphics::radian(float a)
 unsigned Graphics::png2tex(const char* name)
 {
 	unsigned char* data;
+<<<<<<< HEAD
 	unsigned texture;
 	lodepng_decode32_file(&data, &retWidth, &retHeight, name);
+=======
+	unsigned width, height;
+	unsigned texture;
+	lodepng_decode32_file(&data, &width, &height, name);
+>>>>>>> 6f577f6091c4cb8075629bed6f984bbb2234edac
 
 	glGenTextures(1,&texture);
 	glBindTexture(GL_TEXTURE_2D,texture);
@@ -133,7 +156,11 @@ unsigned Graphics::png2tex(const char* name)
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);*/
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+<<<<<<< HEAD
 	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, retWidth, retHeight, GL_RGBA, GL_UNSIGNED_BYTE, data);
+=======
+	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+>>>>>>> 6f577f6091c4cb8075629bed6f984bbb2234edac
 	//glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,width,height,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
 	delete data;
 	return texture;
@@ -165,8 +192,11 @@ void Graphics::draw(float X,float Y,float W,float H,float Rot,unsigned Texture)
 	glDisable(GL_TEXTURE_2D);
 }
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 6f577f6091c4cb8075629bed6f984bbb2234edac
 void Graphics::draw(float X,float Y,float W,float H,unsigned Texture)
 {
 	glEnable( GL_TEXTURE_2D );
