@@ -1,31 +1,23 @@
 #pragma once
 #include "GameCore.h"
+#include "Pause.h"
 #include "ModuleManager.h"
-#include "Final.h"
-#include "Menu.h"
-#include "Module.h"
-/*
- Engine provides all the application
- This class agregating the Map and the Ball objects
- TODO: singleton
-*////
 
 class Engine
 {
 private:
-	GameCore game;
-	Final fin;
-	Menu menu;
+	ModuleManager* mgr;
+	GameCore* game;
+	Pause* pause;
+	Font* font;
 	Engine();
-	//Engine(const Engine& root);
-	//Engine& operator=(const Engine&);
-	//void gameOver(char* also);
+	
 public:
-	ModuleManager mgr;
-	static Engine& Instance();
+	Font* getFont(){return font;}
+	void keyPressed(int Key);
+	void keyReleased(int Key);
 	void play();
-	/*GameCore* getGame()
-	{
-		return &game;
-	}*/
-	};
+	static Engine& Instance();
+	
+	//void reshape(int Width, int Height);
+};

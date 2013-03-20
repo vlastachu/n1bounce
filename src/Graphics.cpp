@@ -1,17 +1,11 @@
-
-#include "Graphics.h"
+#include <GL\glu.h>
 #include "defs.h"
 #include "lodepng.h"
+#include "Graphics.h"
 
-unsigned Graphics::retWidth, Graphics::retHeight;
 void Graphics::color(float R,float G,float B)
 {
 	glColor3f(R,G,B);
-}
-
-void Graphics::color(Color4f c)
-{
-	glColor4f(c.red,c.green,c.blue,c.alpha);
 }
 
 void Graphics::circle(float X, float Y, float R)
@@ -27,83 +21,11 @@ void Graphics::circle(float X, float Y, float R)
 
 void Graphics::rectangle(float X,float Y,float W,float H)
 {
-	glBegin(GL_QUADS);
+	glBegin(GL_LINE_LOOP);
 		glVertex2f(X,Y);
 		glVertex2f(X+W,Y);
 		glVertex2f(X+W,Y+H);
 		glVertex2f(X,Y+H);
-	glEnd();
-}
-
-void Graphics::roundedRectangle(float X,float Y,float W,float H, float R)
-{
-	if (R == 0)
-	{
-		rectangle(X, Y, W, H);
-		return;
-	}
-	glBegin(GL_TRIANGLE_FAN);
-
-		glVertex2f(X + W/2,Y + H/2);//center
-		glVertex2f(X, Y + H - R);
-		for(int i = 180; i < 270; i += 5)
-		{
-			float a = radian(i);
-			glVertex2f(cos(a)*R + X + R,sin(a)*R + Y + R);
-		}
-		for(int i = 270; i < 360; i += 5)
-		{
-			float a = radian(i);
-			glVertex2f(cos(a)*R + X + W - R,sin(a)*R + Y + R);
-		}
-		for(int i = 0; i < 90; i += 5)
-		{
-			float a = radian(i);
-			glVertex2f(cos(a)*R + X + W - R,sin(a)*R + Y + H - R);
-		}
-		for(int i = 90; i < 180; i += 5)
-		{
-			float a = radian(i);
-			glVertex2f(cos(a)*R + X + R,sin(a)*R + Y + H - R);
-		}
-		glVertex2f(X, Y + H - R);
-	glEnd();
-}
-
-void Graphics::roundedRectangle(float X,float Y,float W,float H, float R,Color4f c1,Color4f c2)
-{
-	if (R == 0)
-	{
-		rectangle(X, Y, W, H);
-		return;
-	}
-	glBegin(GL_TRIANGLE_FAN);
-		//glVertex2f(X + W/2,Y + H/2);//center
-		color(c2);
-		glVertex2f(X, Y + H - R);
-		color(c1);
-		for(int i = 180; i < 270; i += 5)
-		{
-			float a = radian(i);
-			glVertex2f(cos(a)*R + X + R,sin(a)*R + Y + R);
-		}
-		for(int i = 270; i < 360; i += 5)
-		{
-			float a = radian(i);
-			glVertex2f(cos(a)*R + X + W - R,sin(a)*R + Y + R);
-		}
-		color(c2);
-		for(int i = 0; i < 90; i += 5)
-		{
-			float a = radian(i);
-			glVertex2f(cos(a)*R + X + W - R,sin(a)*R + Y + H - R);
-		}
-		for(int i = 90; i < 180; i += 5)
-		{
-			float a = radian(i);
-			glVertex2f(cos(a)*R + X + R,sin(a)*R + Y + H - R);
-		}
-		glVertex2f(X, Y + H - R);
 	glEnd();
 }
 
@@ -122,8 +44,10 @@ float Graphics::radian(float a)
 unsigned Graphics::png2tex(const char* name)
 {
 	unsigned char* data;
+	unsigned width, height;
 	unsigned texture;
-	lodepng_decode32_file(&data, &retWidth, &retHeight, name);
+	lodepng_decode32_file(&data, &width, &height, name);
+
 	glGenTextures(1,&texture);
 	glBindTexture(GL_TEXTURE_2D,texture);
 	/*glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
@@ -132,17 +56,20 @@ unsigned Graphics::png2tex(const char* name)
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);*/
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, retWidth, retHeight, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	//glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,width,height,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
 	delete data;
 	return texture;
 }
-void Graphics::draw(float X,float Y,float W,float H,float Rot,unsigned Texture)
+void Graphics::draw(float X1,float Y1,float X2,float Y2,float X,float Y,float W,float H,
+		  float X0,float Y0,float Rot,string Texture)
 {
+	map<string,unsigned>::iterator it=textures.find(Texture);
+	if(it==textures.end()) return;
 	glEnable( GL_TEXTURE_2D );
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glBindTexture( GL_TEXTURE_2D, Texture);
+	glBindTexture( GL_TEXTURE_2D, it->second);
 
 	glPushMatrix();
 
@@ -152,10 +79,10 @@ void Graphics::draw(float X,float Y,float W,float H,float Rot,unsigned Texture)
 
 	glColor3f(1.0,1.0,1.0);
 	glBegin( GL_QUADS );
-		glTexCoord2f(0,0); glVertex2f(-W/2,-H/2);
-		glTexCoord2f(0,1); glVertex2f(-W/2,H/2);
-		glTexCoord2f(1,1); glVertex2f(W/2,H/2);
-		glTexCoord2f(1,0); glVertex2f(W/2,-H/2);
+		glTexCoord2f(X1,Y1); glVertex2f(W*-X0,H*-Y0);
+		glTexCoord2f(X1,Y2); glVertex2f(W*-X0,H*(1-Y0));
+		glTexCoord2f(X2,Y2); glVertex2f(W*(1-X0),H*(1-Y0));
+		glTexCoord2f(X2,Y1); glVertex2f(W*(1-X0),H*-Y0);
 	glEnd();
 
 	glPopMatrix();
@@ -164,21 +91,73 @@ void Graphics::draw(float X,float Y,float W,float H,float Rot,unsigned Texture)
 	glDisable(GL_TEXTURE_2D);
 }
 
-void Graphics::draw(float X,float Y,float W,float H,unsigned Texture)
+map<string,Font> Graphics::fonts;
+map<string,unsigned> Graphics::textures;
+
+void Graphics::addTexture(unsigned TextureId,string TextureName)
 {
+	textures.insert(std::pair<string,unsigned>(TextureName,TextureId));
+}
+
+void Graphics::outCharXY(float X,float Y,float W,float H,char C,string FontName)
+{
+	map<string,Font>::iterator it=fonts.find(FontName);
+	if(it==fonts.end()) return;
+	float x1=((C-it->second.startChar)%it->second.xNum)/(float)it->second.xNum;
+	float y1=((C-it->second.startChar)/it->second.xNum)/(float)it->second.yNum;
+	float x2=x1+1/(float)it->second.xNum;
+	float y2=y1+1/(float)it->second.yNum;
+
 	glEnable( GL_TEXTURE_2D );
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glBindTexture( GL_TEXTURE_2D, Texture);
+	glBindTexture( GL_TEXTURE_2D, it->second.texture);
 
 	glColor3f(1.0,1.0,1.0);
 	glBegin( GL_QUADS );
-		glTexCoord2f(0,0); glVertex2f(X,Y);
-		glTexCoord2f(0,1); glVertex2f(X,Y+H);
-		glTexCoord2f(1,1); glVertex2f(X+W,Y+H);
-		glTexCoord2f(1,0); glVertex2f(X+W,Y);
+		glTexCoord2f(x1,y1); glVertex2f(X,Y);
+		glTexCoord2f(x1,y2); glVertex2f(X,Y+H);
+		glTexCoord2f(x2,y2); glVertex2f(X+W,Y+H);
+		glTexCoord2f(x2,y1); glVertex2f(X+W,Y);
 	glEnd();
 
 	glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_2D);
+
+	//draw(x1,y1,x2,y2,X,Y,W,H,0,0,0,it->second.texture);
 }
+
+void Graphics::outTextXY(float X,float Y,float CharW,float CharH,const char* Str,string FontName)
+{
+	for(int i=0;Str[i]!='\0';i++)
+		outCharXY(X+CharW*i,Y,CharW,CharH,Str[i],FontName);
+}
+
+void Graphics::addFont(unsigned TextureId,int XNum,int YNum,int StartChar,string FontName)
+{
+	fonts.insert(std::pair<string,Font>(FontName,Font(TextureId,XNum,YNum,StartChar)));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

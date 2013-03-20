@@ -1,31 +1,28 @@
-
 #include "Ninja.h"
-//#include "defs.h"
-//#include <iostream>
-//using namespace std;
-
+#include "Engine.h"
 	
 Ninja::Ninja(GameCore* Parent)
 {
 	parent=Parent;
 	
-	body.texture=Graphics::png2tex("../data/ninja.png");
-	leg1.texture=Graphics::png2tex("../data/leg.png");
-	leg2.texture=leg1.texture;
-	katana.texture=Graphics::png2tex("../data/katana.png");
+	//body.texture=Graphics::png2tex("../data/ninja.png");
+	//leg1.texture=Graphics::png2tex("../data/leg.png");
+	//leg2.texture=leg1.texture;
+	//katana.texture=Graphics::png2tex("../data/katana.png");
 }
 
 void Ninja::init()
 {	
 	
-	x=XSCALE_AXIS;
-	y=400;
-	r=15;
+	x=parent->xScaleAxis;
+	y=HEIGHT*0.8;
+	r=HEIGHT*0.05;
 	phase=0;
 	state=1;
 	dy      = 0;
 	jmp     = 0;
-	impulse = 16;
+	impulse = 15;
+
 
 	body.w=r*2;
 	body.h=r*2;
@@ -44,27 +41,23 @@ void Ninja::draw()
 {
 	//Graphics::circle(x,y-r,r);
 	
-	Graphics::draw(parent->toX(leg1.x+x)   , parent->toY(leg1.y+y)   , parent->toL(leg1.w)   , parent->toL(leg1.h)   , leg1.rot   , leg1.texture);
-	Graphics::draw(parent->toX(body.x+x)   , parent->toY(body.y+y)   , parent->toL(body.w)   , parent->toL(body.h)   , body.rot   , body.texture);
-	Graphics::draw(parent->toX(katana.x+x) , parent->toY(katana.y+y) , parent->toL(katana.w) , parent->toL(katana.h) , katana.rot , katana.texture);
-	Graphics::draw(parent->toX(leg2.x+x)   , parent->toY(leg2.y+y)   , parent->toL(leg2.w)   , parent->toL(leg2.h)   , leg2.rot   , leg2.texture);
+	Graphics::draw(0,0,1,1, parent->toX(leg1.x+x)   , parent->toY(leg1.y+y)   , parent->toL(leg1.w)   , parent->toL(leg1.h)   ,0.5,0.5,   leg1.rot   , "n_leg");
+	Graphics::draw(0,0,1,1, parent->toX(body.x+x)   , parent->toY(body.y+y)   , parent->toL(body.w)   , parent->toL(body.h)   ,0.5,0.5,   body.rot   , "n_body");
+	Graphics::draw(0,0,1,1, parent->toX(katana.x+x) , parent->toY(katana.y+y) , parent->toL(katana.w) , parent->toL(katana.h) ,0.5,0.5, katana.rot   , "n_katana");
+	Graphics::draw(0,0,1,1, parent->toX(leg2.x+x)   , parent->toY(leg2.y+y)   , parent->toL(leg2.w)   , parent->toL(leg2.h)   ,0.5,0.5,   leg2.rot   , "n_leg");
 }
 
 void Ninja::move()
 {
-	if(y >= HEIGHT*2)
+	if(y >= HEIGHT*2) //TODO: NICER!!
 	{
 		parent->gameOver("deadline");
 	}
 
 	prevY=y;
-	y -= dy;
+	y -= r*dy*0.07;
 	dy--;
 	
-	/*if(state==1)
-	{
-		state=2;
-	}*/
 	if(prevY<=borderY && y>=borderY)
 	{
 		dy=0;
@@ -75,12 +68,11 @@ void Ninja::move()
 	}
 	else
 	{
-		if(state==1 || state==4)
-			jmp=1;
-
 		if(state!=3 && state!=5)
 		{
 			state=2;
+			if(jmp==0)
+				jmp=1;
 		}
 	}
 	
@@ -174,7 +166,7 @@ void Ninja::move()
 		katana.y=-r*3/4;
 		katana.rot=180;
 		
-		phase+=(float)1/15;
+		phase+=(float)1/20;
 		if(phase>=1)
 			state=1;
 		break;
@@ -190,13 +182,11 @@ void Ninja::move()
 
 void Ninja::jump()
 {
-	if(jmp < 2)
+	if(jmp < 2 && state!=5)
 	{
-		//air=true;
 		if(jmp==1)
 		{
-			phase=0;
-			state=3;
+			setState(3);
 		}
 		dy=impulse;
 		jmp++;
@@ -205,5 +195,6 @@ void Ninja::jump()
 
 void Ninja::slide()
 {
-	setState(4);
+	if(state!=5)
+		setState(4);
 }

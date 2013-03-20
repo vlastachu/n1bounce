@@ -1,7 +1,6 @@
 #pragma once
-#include "GameCore.h"
-#include "EventManager.h"
 #include "Graphics.h"
+#include "GameCore.h"
 
 class GameCore;
 class Ninja
@@ -19,7 +18,7 @@ class Ninja
 	struct Element 
 	{
 		float x,y,h,w,rot;
-		unsigned texture;
+		//unsigned texture;
 	};
 	Element leg1,leg2,body,katana;
 public:

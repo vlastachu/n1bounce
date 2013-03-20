@@ -1,4 +1,5 @@
 #include "Map.h"
+#include "Engine.h"
 
 Map::Map(GameCore* Root)
 {
@@ -23,7 +24,7 @@ void Map::init()
 	}
 	elements.clear();
 
-	Platform* p=new Platform(-100,500,WIDTH,root);       //    UNSAFE NULL->x
+	Platform* p=new Platform(-HEIGHT*0.2,HEIGHT*0.8,WIDTH,root);       //    UNSAFE NULL->x   //def
 	elements.push_back(p);
 	lastPlat=p;
 }
@@ -31,28 +32,28 @@ void Map::init()
 void Map::move()
 {
 
-	if(root->toX(lastPlat->x + lastPlat->w - PLATFORM_DISTANCE) <= WIDTH)  
+	if(root->toX(lastPlat->x + lastPlat->w + HEIGHT/2) <= WIDTH)  //def
 	{
-		float deltaY=rand()%150;
+		float deltaY=rand()%int(HEIGHT*0.5);  //def
 		float directionY=rand()%2;
 		if(directionY==0) directionY=-1;
-		if(lastPlat->y+deltaY>500)
+		if(lastPlat->y+deltaY>HEIGHT*0.9)  //def
 		{
 			directionY=-1;
 		}
-		else if(lastPlat->y-deltaY<40)
+		else if(lastPlat->y-deltaY<HEIGHT*0.1)  //def
 		{
 			directionY=1;
 		}
 		
-		Platform* p=new Platform(lastPlat->x+lastPlat->w+200,lastPlat->y+directionY*deltaY,200+rand()%300,root);
-		lastPlat=p;
-		elements.push_back(p);
+		Platform* p=new Platform(lastPlat->x+lastPlat->w+HEIGHT/2,lastPlat->y+directionY*deltaY,HEIGHT/2+rand()%int(HEIGHT),root);  //def
+		lastPlat=p;  //										|										|
+		elements.push_back(p);  //							<--------------different---------------->
 		if(!(rand()%4))
 		{
 			elements.push_back(p->addTrap());
 		}
-		else if(p->w>350)
+		else if(p->w>HEIGHT)   //def
 		{
 			elements.push_back(p->addDB());
 		}
@@ -60,7 +61,7 @@ void Map::move()
 
 	if(!elements.empty())
 	{
-		if((elements.front()->x + elements.front()->w) < - WIDTH)//TODO: do it nicer
+		if((elements.front()->x + elements.front()->w) < - WIDTH)  //TODO: do it nicer
 		{
 			delete *elements.begin();
 			elements.erase(elements.begin());
@@ -68,7 +69,7 @@ void Map::move()
 	}
 
 
-	root->getNinja()->setBorder(2*HEIGHT);
+	root->getNinja()->setBorder(2*HEIGHT);  //TODO: do it nicer
 	for(std::list<MapShape*>::iterator it = elements.begin(); it != elements.end(); it++)
 	{
 		(*it)->x-=root->speed;
@@ -80,14 +81,18 @@ void Map::move()
 
 
 
-//____MapShape____________________________________________________________________________________________________
+//____MapShape_________________________________________________________________________________________________
 
 
 
 
-MapShape::MapShape(float X,float Y,float W,float H,int Id,GameCore* Root)
+MapShape::MapShape(float X,float Y,float W,float H,GameCore* Root)
 {
-	x=X;y=Y;w=W;h=H;id=Id,root=Root;
+	x=X;y=Y;w=W;h=H;root=Root;
+}
+
+Trap::Trap(float X,float Y,GameCore* Root):MapShape(X,Y,HEIGHT*0.1,HEIGHT*0.05,Root)  //def
+{
 }
 
 void Trap::draw()
@@ -104,14 +109,19 @@ void Trap::move()
 	}
 }
 
+
+Platform::Platform(float X,float Y,float W,GameCore* Root):MapShape(X,Y,W,HEIGHT*0.1,Root)  //def
+{
+}
+
 Trap* Platform::addTrap()
 {
-	return new Trap(x+rand()%(int)(w-30),y-15,root);
+	return new Trap(x+rand()%(int)(w-HEIGHT*0.1),y-HEIGHT*0.05,root);   //def
 }
 
 DeathBall* Platform::addDB()
 {
-	return new DeathBall(x+w/4+rand()%int(w/2), y-50-root->getNinja()->r*2, 50, root);
+	return new DeathBall(x+w*0.5+rand()%int(w*0.25), y-HEIGHT*0.16-root->getNinja()->r*2*1.1, HEIGHT*0.16, root);  //def
 }
 
 void Platform::draw()
@@ -128,11 +138,18 @@ void Platform::move()
 	}
 }
 
+DeathBall::DeathBall(float X,float Y,float R,GameCore* Root):MapShape(X,Y,R*2,R*2,Root)
+{
+	r=R;
+}
+
 void DeathBall::draw()
 {
-	Graphics::color(0,0,1);
-	Graphics::circle(root->toX(x),root->toY(y),root->toL(r));
-	Graphics::rectangle(root->toX(x-5),0,root->toL(10),root->toY(y-r));
+	Graphics::color(0.5,0.5,0.5);
+	Graphics::rectangle(root->toX(x-HEIGHT*0.02),0,root->toL(HEIGHT*0.04),root->toY(y));  //def
+	Graphics::draw(0,0,1,1,root->toX(x-r),root->toY(y-r),root->toL(2*r),root->toL(2*r),0,0,0,"db");
+	
+	//Graphics::circle(root->toX(x),root->toY(y),root->toL(r));
 }
 
 void DeathBall::move()
