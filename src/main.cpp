@@ -1,6 +1,6 @@
 #include <vector> // WTFFFFF??????????????
-#include <GL\glut.h>
 
+#include <GL\glut.h>
 #include <time.h>
 #include "Engine.h"
 

@@ -46,15 +46,17 @@ public:
 	virtual void move();
 };
 
+//class BcgrTile:public 
+
 
 
 class Map
 {
 	GameCore* root;
 	
-	int randW, randY, directionY, deltaY;
+	//int randW, randY, directionY, deltaY;
 	std::list<MapShape*> elements;
-	int dist;
+	//int dist;
 	Platform* lastPlat;
 public:
 	Map(GameCore* Parent);

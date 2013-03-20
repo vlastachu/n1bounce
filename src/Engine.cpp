@@ -6,6 +6,9 @@ Engine::Engine()
 	Graphics::addTexture(Graphics::png2tex("../data/leg.png"),    "n_leg");
 	Graphics::addTexture(Graphics::png2tex("../data/katana.png"), "n_katana");
 	Graphics::addTexture(Graphics::png2tex("../data/db.png"), "db");
+	Graphics::addTexture(Graphics::png2tex("../data/chain.png"), "chain");
+	Graphics::addTexture(Graphics::png2tex("../data/trap.png"), "trap");
+
 
 	Graphics::addFont(Graphics::png2tex("../data/font.png"),16,16,0,"dbg_font");
 
