@@ -1,4 +1,5 @@
 #include "ModuleManager.h"
+#include <algorithm>
 //#include "Module.h"
 
 //using namespace std;
@@ -38,17 +39,14 @@ void ModuleManager::Start(string name,map<string, void*> params)
 
 void ModuleManager::Stop(string name)
 {
-	dump.push_back(name);
+	if(std::find(dump.begin(),dump.end(),name)==dump.end())
+		dump.push_back(name);
 	isDump=true;
 }
 
 void ModuleManager::Run()
 {
 	//cout<<2;
-	for(map<string,Module*>::iterator it=activeModules.begin();it!=activeModules.end();it++)
-	{
-		it->second->Run();//NULL->Run()
-	}
 	//cout<<6;
 	if(isDump)
 	{
@@ -59,6 +57,10 @@ void ModuleManager::Run()
 		}
 		dump.clear();
 		isDump=false;
+	}
+	for(map<string,Module*>::iterator it=activeModules.begin();it!=activeModules.end();it++)
+	{
+		it->second->Run();//NULL->Run()
 	}
 }
 

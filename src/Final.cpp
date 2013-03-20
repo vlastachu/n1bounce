@@ -75,8 +75,8 @@ void Final::Run(){
 
 void Final::keyPressed(int key){
 	if (!_key && key == GLUT_KEY_UP){
-		Engine::Instance().mgr.Stop("final");
-		Engine::Instance().mgr.Start("game");
+		/*Engine::Instance().mgr.Stop("final");
+		Engine::Instance().mgr.Start("game");*/
 	}
 }
 
