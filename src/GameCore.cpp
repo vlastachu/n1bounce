@@ -1,10 +1,8 @@
 #include <iostream>
-#include <time.h>
 #include <GL\glut.h>
 #include "GameCore.h"
+#include "Text.h"
 #include "Engine.h"
-
-
 GameCore::GameCore()
 {
 	g_map=new Map(this);
@@ -26,9 +24,6 @@ void GameCore::keyPressed(int Key)
 		case GLUT_KEY_RIGHT:
 			speed++;
 			break;
-		case GLUT_KEY_LEFT:
-			_pause=true;
-			break;
 		}
 		_key=true;
 	}
@@ -41,23 +36,30 @@ void GameCore::keyReleased(int Key)
 
 void GameCore::Init()
 {
-	xScaleAxis=HEIGHT*0.4; //def
-	yScaleAxis=HEIGHT;
+	back1 = (new Background())->setTexture("../data/sun.png")->setX(0.0);
+	back2 = (new Background())->setTexture("../data/mountains.png")->setX(0.0001)->setY(80);
+	back3 = (new Background())->setTexture("../data/groundc.png")->setX(0.0006)->setY(379);
 
+
+	EventManager::Instance().Register(this);
 	scale=1;
 	score = 0;
-	speed = HEIGHT/40;  //def
+	speed = 10;
 	_gameOver=false;
 	_key=false;
-	_pause=false;
 	g_map->init();
 	man->init();
-
-	srand (time(NULL));
+	text = (new Text())
+		->setFont("../fonts/Ubuntu-m.ttf",33)
+		->setShadow(true, 2, 2, 0.0, 0.38, 0.78,1.0)
+		->setX(700)
+		->setY(20)
+		->setColor(1.0, 0.615, 0.29,1.0);
 }
 
 void GameCore::Clear()
 {
+
 }
 
 void GameCore::gameOver(const char* also){
@@ -65,49 +67,53 @@ void GameCore::gameOver(const char* also){
 		_gameOver=true;
 }
 
-void GameCore::glutPrint(float x, float y, void* font, string text) 
-{
-	glColor3f(0.0,0.7,0.5);
-    glRasterPos2f(x,y); 
-    for (int i=0; i<text.size(); i++)
-    {
-        glutBitmapCharacter(font, text[i]);
-    }
-}
+
 void GameCore::Run()
 {
+	back1->draw();
+	back2->draw();
+	back3->draw();
 	man->move();
 	man->draw();
 	g_map->move();
 	g_map->draw();
+	/*ball.move();
+	ball.draw();*/
 	
-	scale=0.15;//1-(yScaleAxis-man->y)/(HEIGHT * 3);  //TODO: exp() function or smth like that
-	//speed+=1;~1/20
-
+	scale=1-(YSCALE_AXIS-man->y)/(HEIGHT*2);
+	//score:
 	score++;
-	string sScore = "Score: ";
+	string sScore = "score: ";
 	char chScore[10]; itoa(score,chScore,10);
 	sScore+=chScore;
-	//glutPrint(800,20,GLUT_BITMAP_TIMES_ROMAN_24,sScore);
-	Engine::Instance().getFont()->outTextXY(sScore.c_str(),WIDTH-300,10,1.5);
+	text->setText(sScore)->draw();
+	
+	/*glEnable(GL_BLEND);
+	glColor4f(0.0,1.0,0.0,0.2);
+	glBegin(GL_LINES);
+		glVertex2f(XSCALE_AXIS , 0);
+		glVertex2f(XSCALE_AXIS , HEIGHT);
+		glVertex2f(0 , YSCALE_AXIS);
+		glVertex2f(WIDTH , YSCALE_AXIS);
+	glEnd();
+	glDisable(GL_BLEND);*/
 
-	if(_gameOver)
-		Init();
-	if(_pause)
-	{
-		_pause=false;
-		mgr->setModule("pause",true);
+	if(_gameOver){
+		map<string,void*> n;
+		n.insert(std::pair<string,void*>("score",&score));
+		Engine::Instance().mgr.Stop("game");
+		Engine::Instance().mgr.Start("final",n);
 	}
 }
 
 float GameCore::toX(float X)
 {
-	return xScaleAxis+(X-xScaleAxis)*scale;
+	return XSCALE_AXIS+(X-XSCALE_AXIS)*scale;
 }
 
 float GameCore::toY(float Y)
 {
-	return yScaleAxis+(Y-yScaleAxis)*scale;
+	return YSCALE_AXIS+(Y-YSCALE_AXIS)*scale;
 }
 
 float GameCore::toL(float L)
@@ -115,3 +121,6 @@ float GameCore::toL(float L)
 	return L*scale;
 }
 
+void GameCore::send(map<string, void*> params){
+
+}

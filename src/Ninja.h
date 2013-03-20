@@ -1,6 +1,7 @@
 #pragma once
-#include "Graphics.h"
 #include "GameCore.h"
+#include "EventManager.h"
+#include "Graphics.h"
 
 class GameCore;
 class Ninja
@@ -30,7 +31,7 @@ public:
 	void slide();
 	//void mapCollise(float Y,float H, int Id);
 	Ninja(GameCore* Parent);
-	float x,y,r,h;//TODO: getter/setter
+	float x,y,r,h;
 	//int getState(){return state;}
 	void setState(int State){state=State;phase=0;};
 	void init();

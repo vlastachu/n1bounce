@@ -1,5 +1,9 @@
+
 #include "Ninja.h"
-#include "Engine.h"
+//#include "defs.h"
+//#include <iostream>
+//using namespace std;
+
 	
 Ninja::Ninja(GameCore* Parent)
 {
@@ -14,15 +18,14 @@ Ninja::Ninja(GameCore* Parent)
 void Ninja::init()
 {	
 	
-	x=parent->xScaleAxis;
-	y=HEIGHT*0.8;
-	r=HEIGHT*0.05;
+	x=XSCALE_AXIS;
+	y=400;
+	r=15;
 	phase=0;
 	state=1;
 	dy      = 0;
 	jmp     = 0;
-	impulse = 15;
-
+	impulse = 16;
 
 	body.w=r*2;
 	body.h=r*2;
@@ -49,15 +52,19 @@ void Ninja::draw()
 
 void Ninja::move()
 {
-	if(y >= HEIGHT*2) //TODO: NICER!!
+	if(y >= HEIGHT*2)
 	{
 		parent->gameOver("deadline");
 	}
 
 	prevY=y;
-	y -= r*dy*0.07;
+	y -= dy;
 	dy--;
 	
+	/*if(state==1)
+	{
+		state=2;
+	}*/
 	if(prevY<=borderY && y>=borderY)
 	{
 		dy=0;
@@ -68,11 +75,12 @@ void Ninja::move()
 	}
 	else
 	{
+		if(state==1 || state==4)
+			jmp=1;
+
 		if(state!=3 && state!=5)
 		{
 			state=2;
-			if(jmp==0)
-				jmp=1;
 		}
 	}
 	
@@ -166,7 +174,7 @@ void Ninja::move()
 		katana.y=-r*3/4;
 		katana.rot=180;
 		
-		phase+=(float)1/20;
+		phase+=(float)1/15;
 		if(phase>=1)
 			state=1;
 		break;
@@ -182,11 +190,13 @@ void Ninja::move()
 
 void Ninja::jump()
 {
-	if(jmp < 2 && state!=5)
+	if(jmp < 2)
 	{
+		//air=true;
 		if(jmp==1)
 		{
-			setState(3);
+			phase=0;
+			state=3;
 		}
 		dy=impulse;
 		jmp++;
@@ -195,6 +205,5 @@ void Ninja::jump()
 
 void Ninja::slide()
 {
-	if(state!=5)
-		setState(4);
+	setState(4);
 }

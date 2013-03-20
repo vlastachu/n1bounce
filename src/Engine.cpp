@@ -1,14 +1,12 @@
 #include "Engine.h"
 
+
 Engine::Engine()
 {
-	mgr=new ModuleManager();
-	game=new GameCore();
-	pause=new Pause();
-	font=new Font("../data/font.png",16,16,0);
-	mgr->Register("game",game);
-	mgr->Register("pause",pause);
-	mgr->setModule("game",true);
+	mgr.Register("menu",&menu);
+	mgr.Register("game",&game);
+	mgr.Register("final",&fin);
+	mgr.Start("menu");
 }
 
 Engine& Engine::Instance()
@@ -17,17 +15,13 @@ Engine& Engine::Instance()
         return theSingleInstance;
 }
 
+//void Engine::gameOver(char* also){
+//		std::cout << "GAME OVER! Try again." << also << "\n";
+//		mgr.Stop("game");
+//		mgr.Start("game");
+//}
+
 void Engine::play()
 {
-	mgr->Run();
-}
-
-void Engine::keyPressed(int Key)
-{
-	mgr->getActiveModule()->keyPressed(Key);
-}
-
-void Engine::keyReleased(int Key)
-{
-	mgr->getActiveModule()->keyReleased(Key);
+	mgr.Run();
 }

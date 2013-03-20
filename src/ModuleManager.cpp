@@ -1,58 +1,66 @@
 #include "ModuleManager.h"
+#include <algorithm>
+//#include "Module.h"
 
+//using namespace std;
 ModuleManager::ModuleManager()
 {
-	activeModule=NULL;
+	isDump=false;
 }
 
-void ModuleManager::Register(string Name,Module* module)
+void ModuleManager::Register(string name,Module* module)
 {
-	modules.insert(std::pair<string,Module*>(Name,module));
-	modules.find(Name)->second->setManager(this);
+	allModules.insert(std::pair<string,Module*>(name,module));
 }
 
+void ModuleManager::Start(string name)
+{
+	map<string,Module*>::iterator it=allModules.find(name);
+	if(it!=allModules.end())
+	{
+		activeModules.insert(std::pair<string,Module*>(name,it->second));
+		it->second->setManager(this);//NULL->Init()
+		it->second->Init();//NULL->Init()
+	}
+}
+
+void ModuleManager::Start(string name,map<string, void*> params)
+{
+	map<string,Module*>::iterator it=allModules.find(name);
+	if(it!=allModules.end())
+	{
+		activeModules.insert(std::pair<string,Module*>(name,it->second));
+		it->second->setManager(this);//NULL->Init()
+		it->second->send(params);
+		it->second->Init();//NULL->Init()
+		
+	}
+}
+
+void ModuleManager::Stop(string name)
+{
+	if(std::find(dump.begin(),dump.end(),name)==dump.end())
+		dump.push_back(name);
+	isDump=true;
+}
 
 void ModuleManager::Run()
 {
-	if(activeModule)
-		activeModule->Run();
-}
-
-void ModuleManager::setModule(string Name,bool Freeze)
-{
-	if(activeModule)
+	//cout<<2;
+	//cout<<6;
+	if(isDump)
 	{
-		activeModule->Freeze=Freeze;
-		if(!activeModule->Freeze)
-			activeModule->Clear();
+		for(vector<string>::iterator it=dump.begin();it!=dump.end();it++)
+		{
+			activeModules.find(*it)->second->Clear();//NULL->Clear()
+			activeModules.erase(*it);
+		}
+		dump.clear();
+		isDump=false;
 	}
-
-	map<string,Module*>::iterator it = modules.find(Name);
-	if(it!=modules.end())
+	for(map<string,Module*>::iterator it=activeModules.begin();it!=activeModules.end();it++)
 	{
-		activeModule=it->second;
-		if(activeModule)
-			if(activeModule->Freeze)
-				activeModule->Freeze=false;
-			else
-				activeModule->Init();
+		it->second->Run();//NULL->Run()
 	}
 }
 
-Module* ModuleManager::getModule(string Name)
-{
-	map<string,Module*>::iterator it = modules.find(Name);
-	if(it!=modules.end())
-	{
-		return it->second;
-	}
-	else
-	{
-		return NULL;
-	}
-}
-
-Module* ModuleManager::getActiveModule()
-{
-	return activeModule;
-}
