@@ -4,6 +4,10 @@
 #include <time.h>
 #include "Engine.h"
 
+#pragma comment(lib, "freetype.lib")
+#pragma comment(lib, "glut32.lib")
+#pragma comment(lib, "glu32.lib")
+#pragma comment(lib, "opengl32.lib")
 
 void reshape(int Width,int Height)
 {
@@ -13,9 +17,6 @@ void motion(int X,int Y)
 {
 }
 
-void mouse(int button, int state, int x, int y)
-{
-}
 
 
 void TimerFunction(int value)
@@ -43,7 +44,13 @@ void keyReleased(int Key,int,int)
 {
 	Engine::Instance().keyReleased(Key);
 }
+void mouse(int button, int state, int x, int y){
+	Engine::Instance().mouse(button, state, x, y);
+}
 
+void mousePasive(int x, int y){
+	Engine::Instance().mousePasive(x, y);
+}
 
 
 int main (int argc, char * argv[])

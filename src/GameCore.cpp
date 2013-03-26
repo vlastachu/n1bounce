@@ -1,5 +1,4 @@
 #include "GameCore.h"
-
 GameCore::GameCore()
 {
 	g_map=new Map(this);
@@ -71,9 +70,8 @@ void GameCore::Run()
 	string sScore = "Score: ";
 	char chScore[10]; itoa(score,chScore,10);
 	sScore+=chScore;
-
-	Graphics::outTextXY(WIDTH-300,10,20,20,sScore.c_str(),"dbg_font");
-
+	//Text::draw(sScore.c_str(),0.85,0.05,"gameinfo");
+	Graphics::outTextXY(HEIGHT*1.5,HEIGHT*0.05,25,25,sScore.c_str(),"../fonts/Ubuntu-m.ttf");
 	if(_gameOver)
 		Init();
 	if(_pause)

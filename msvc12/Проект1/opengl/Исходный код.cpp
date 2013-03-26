@@ -139,41 +139,30 @@ void display()
 //    GL_UNSIGNED_BYTE, 
 //    data
 //);
-		float dx = .2, dy = .2,x = 20, y = 10, w = 32*85, h = 64;
+
+		float dx = 0.9, dy = 0.9, outline = 5,x = 20, y = 10, w = 32*85, h = 64;
 	glBindTexture(GL_TEXTURE_2D,tex);
-	glColor4f(0,0.7,0.7,1);
+	glColor4f(0,0,0,1);
 		glBegin(GL_QUADS);
+		float detalization = 64;float PI = 22.0/7.0;
+			for(float i = 0.0; i <= PI*2; i += PI*2/detalization)
+			{
+				dx = outline*cos(i), dy = outline*sin(i);
 		  glTexCoord2f(0.0f, 0.0f);glVertex2f(x+dx,y+dy); //top left
 		  glTexCoord2f(1.0f, 0.0f);glVertex2f(x+dx + w,y+dy); //top right
 		  glTexCoord2f(1.0f, 1.0f);glVertex2f(x+dx + w,y+dy + h); // bottom right
 		  glTexCoord2f(0.0f, 1.0f);glVertex2f(x+dx ,y+dy + h); //bottom left
-		glEnd();
-		glBegin(GL_QUADS);
-		  glTexCoord2f(0.0f, 0.0f);glVertex2f(x-dx,y+dy); //top left
-		  glTexCoord2f(1.0f, 0.0f);glVertex2f(x-dx + w,y+dy); //top right
-		  glTexCoord2f(1.0f, 1.0f);glVertex2f(x-dx + w,y + h+dy); // bottom right
-		  glTexCoord2f(0.0f, 1.0f);glVertex2f(x-dx ,y + h+dy); //bottom left
-		glEnd();
-		glBegin(GL_QUADS);
-		  glTexCoord2f(0.0f, 0.0f);glVertex2f(x-dx,y-dy); //top left
-		  glTexCoord2f(1.0f, 0.0f);glVertex2f(x-dx + w,y-dy); //top right
-		  glTexCoord2f(1.0f, 1.0f);glVertex2f(x-dx + w,y-dy + h); // bottom right
-		  glTexCoord2f(0.0f, 1.0f);glVertex2f(x-dx ,y-dy + h); //bottom left
-		glEnd();
-		glBegin(GL_QUADS);
-		  glTexCoord2f(0.0f, 0.0f);glVertex2f(x+dx,y-dy); //top left
-		  glTexCoord2f(1.0f, 0.0f);glVertex2f(x+dx + w,y-dy); //top right
-		  glTexCoord2f(1.0f, 1.0f);glVertex2f(x+dx + w,y + h-dy); // bottom right
-		  glTexCoord2f(0.0f, 1.0f);glVertex2f(x+dx ,y + h-dy); //bottom left
+			}
 		glEnd();
 	glBindTexture(GL_TEXTURE_2D,tex);
 
 		glBegin(GL_QUADS); 
-		  glColor4f(0.0,0.0,1,1.);
-		  glTexCoord2f(0.3f, 0.2f);glVertex2f(x+dx,y-dy); //top left
-		  glTexCoord2f(0.6f, 0.2f);glVertex2f(x+dx + w,y-dy); //top right
-		  glTexCoord2f(0.6f, 0.4f);glVertex2f(x+dx + w,y + h-dy); // bottom right
-		  glTexCoord2f(0.3f, 0.4f);glVertex2f(x+dx ,y + h-dy); //bottom left
+		  glColor4f(0.9,0.0,0,1.);
+		  glTexCoord2f(0.0f, 0.0f);glVertex2f(x,y); //top left
+		  glTexCoord2f(1.0f, 0.0f);glVertex2f(x + w,y); //top right
+		  glColor4f(0.9,0.9,0,1.);
+		  glTexCoord2f(1.0f, 1.0f);glVertex2f(x + w,y + h); // bottom right
+		  glTexCoord2f(0.0f, 1.0f);glVertex2f(x ,y + h); //bottom left
 		glEnd();
 	//glActiveTexture(GL_TEXTURE0);
 	//glBindTexture(GL_TEXTURE_2D, texture[0]);               // Select Our Texture
