@@ -23,7 +23,7 @@ public:
 	float toL(float L);
 	float speed;
 	float scale;
-	void gameOver(const char* also);//TODO ubrat' naxuy
+	void gameOver(const char* also);//TODO: ubrat' naxuy
 	Ninja* getNinja(){return man;}
 	Map* getMap(){return g_map;}
 	GameCore();

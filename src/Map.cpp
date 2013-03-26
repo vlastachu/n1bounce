@@ -91,24 +91,22 @@ MapShape::MapShape(float X,float Y,float W,float H,GameCore* Root)
 	x=X;y=Y;w=W;h=H;root=Root;
 }
 
-Trap::Trap(float X,float Y,GameCore* Root):MapShape(X,Y,HEIGHT*0.1,HEIGHT*0.05,Root)  //def
+Trap::Trap(float X,float Y,GameCore* Root):MapShape(X,Y,HEIGHT*0.2,HEIGHT*0.2,Root)  //def
 {
 }
 
 void Trap::draw()
 {
-	Graphics::color(1,0,0);
-	Graphics::rectangle(root->toX(x),root->toY(y),root->toL(w),root->toL(h));
+	Graphics::draw(0,0,1,1,root->toX(x),root->toY(y),root->toL(h),root->toL(h),0,1,0,"trap");
 }
 
 void Trap::move()
 {
-	if(x<root->getNinja()->x && x+w>root->getNinja()->x && y<=root->getNinja()->y && y+h>=root->getNinja()->y)
+	if(x<root->getNinja()->x && x+w>root->getNinja()->x && y>=root->getNinja()->y && y-0.7*h<=root->getNinja()->y)
 	{
 		root->getNinja()->setState(5);
 	}
 }
-
 
 Platform::Platform(float X,float Y,float W,GameCore* Root):MapShape(X,Y,W,HEIGHT*0.1,Root)  //def
 {
@@ -116,7 +114,7 @@ Platform::Platform(float X,float Y,float W,GameCore* Root):MapShape(X,Y,W,HEIGHT
 
 Trap* Platform::addTrap()
 {
-	return new Trap(x+rand()%(int)(w-HEIGHT*0.1),y-HEIGHT*0.05,root);   //def
+	return new Trap(x+rand()%(int)(w-HEIGHT*0.2),y,root);   //def
 }
 
 DeathBall* Platform::addDB()
@@ -146,9 +144,14 @@ DeathBall::DeathBall(float X,float Y,float R,GameCore* Root):MapShape(X,Y,R*2,R*
 void DeathBall::draw()
 {
 	Graphics::color(0.5,0.5,0.5);
-	Graphics::rectangle(root->toX(x-HEIGHT*0.02),0,root->toL(HEIGHT*0.04),root->toY(y));  //def
-	Graphics::draw(0,0,1,1,root->toX(x-r),root->toY(y-r),root->toL(2*r),root->toL(2*r),0,0,0,"db");
-	
+	float _y=root->toY(y);
+	while(_y>0)
+	{
+		_y-=root->toL(HEIGHT*0.07);
+		Graphics::draw(0,0,1,1,root->toX(x),_y,root->toL(HEIGHT*0.07),root->toL(HEIGHT*0.07),0.5,0,0,"chain");
+	}
+	//Graphics::rectangle(root->toX(x-HEIGHT*0.02),0,root->toL(HEIGHT*0.04),root->toY(y));  //def
+	Graphics::draw(0,0,1,1,root->toX(x),root->toY(y),root->toL(2*r),root->toL(2*r),0.5,0.5,0,"db");
 	//Graphics::circle(root->toX(x),root->toY(y),root->toL(r));
 }
 

@@ -5,6 +5,9 @@ Engine::Engine()
 	Graphics::addTexture(Graphics::png2tex("../data/leg.png"),    "n_leg");
 	Graphics::addTexture(Graphics::png2tex("../data/katana.png"), "n_katana");
 	Graphics::addTexture(Graphics::png2tex("../data/db.png"), "db");
+	Graphics::addTexture(Graphics::png2tex("../data/chain.png"), "chain");
+	Graphics::addTexture(Graphics::png2tex("../data/trap.png"), "trap");
+
 
 	//Text::addFontStyle("gameinfo","../fonts/Ubuntu-m.ttf",63,0,0,0,0.005,false,Color4f(0.3,0,0,1),0,0,Color4f(0,0,0,1),0.0005,Color4f(0.75,0.75,0.75,1));
 	Graphics::addFont("../fonts/Ubuntu-m.ttf");
