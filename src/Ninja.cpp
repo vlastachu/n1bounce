@@ -55,7 +55,7 @@ void Ninja::move()
 	}
 
 	prevY=y;
-	y -= r*dy*0.07;
+	y -= r*dy*0.07f;//def
 	dy--;
 	
 	if(prevY<=borderY && y>=borderY)
@@ -85,19 +85,19 @@ void Ninja::move()
 		h=r*4;
 
 		body.x=0;
-		body.y=(-abs(sin(2*PI*(phase+0.25)))-1) * r*2;
+		body.y=static_cast<float>((-abs(sin(2*PI*(phase+0.25)))-1) * r*2);
 		body.rot=30;
 		
-		leg1.x=cos(2*PI*phase)*r*3/2 - r/2;
-		leg1.y=sin(2*PI*phase)*r - r*5/4;
+		leg1.x=static_cast<float>(cos(2*PI*phase)*r*3/2 - r/2);
+		leg1.y=static_cast<float>(sin(2*PI*phase)*r - r*5/4);
 		leg1.rot=0;
 
-		leg2.x=cos(2*PI*(phase+0.5))*r*3/2 - r/2;
-		leg2.y=sin(2*PI*(phase+0.5))*r - r*5/4;
+		leg2.x=static_cast<float>(cos(2*PI*(phase+0.5))*r*3/2 - r/2);
+		leg2.y=static_cast<float>(sin(2*PI*(phase+0.5))*r - r*5/4);
 		leg2.rot=0;
 
 		katana.x=-r*2/4;
-		katana.y=(-abs(sin(2*PI*(phase+0.25)))-0.8)*r*2;
+		katana.y=static_cast<float>((-abs(sin(2*PI*(phase+0.25)))-0.8)*r*2);
 		katana.rot=30;
 
 		phase+=(float)1/20;
@@ -130,16 +130,16 @@ void Ninja::move()
 		body.rot=phase*360;
 
 
-		leg1.x=cos(2*PI*(phase+0.25))*r*1.2;
-		leg1.y=sin(2*PI*(phase+0.25))*r*1.2 - r*2;
+		leg1.x=static_cast<float>(cos(2*PI*(phase+0.25))*r*1.2);
+		leg1.y=static_cast<float>(sin(2*PI*(phase+0.25))*r*1.2 - r*2);
 		leg1.rot=phase*360;
 
-		leg2.x=cos(2*PI*(phase+0.30))*r*1.2;
-		leg2.y=sin(2*PI*(phase+0.30))*r*1.2 - r*2;
-		leg2.rot=(phase+0.1)*360;
+		leg2.x=static_cast<float>(cos(2*PI*(phase+0.30))*r*1.2);
+		leg2.y=static_cast<float>(sin(2*PI*(phase+0.30))*r*1.2 - r*2);
+		leg2.rot=(phase+0.1f)*360;//f
 		
-		katana.x=cos(2*PI*phase-0.7)*r;
-		katana.y=-r*2+sin(2*PI*phase-0.7)*r;
+		katana.x=static_cast<float>(cos(2*PI*phase-0.7)*r);
+		katana.y=static_cast<float>(-r*2+sin(2*PI*phase-0.7)*r);
 		katana.rot=phase*360+90;
 
 		phase+=(float)1/10;
@@ -155,11 +155,11 @@ void Ninja::move()
 		body.rot=0;
 
 		leg1.y=-r;
-		leg1.x=-r*2.5;
+		leg1.x=-r*2.5f;//f
 		leg1.rot=0;
 
-		leg2.y=-r*0.7;
-		leg2.x=-r*2.8;
+		leg2.y=-r*0.7f;//f
+		leg2.x=-r*2.8f;//f
 		leg2.rot=0;
 
 		katana.x=r*2;

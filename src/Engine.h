@@ -1,25 +1,33 @@
 #pragma once
 #include "GameCore.h"
-#include "Pause.h"
+#include "GameOver.h"
+#include "StartMenu.h"
 #include "ModuleManager.h"
+
 
 class Engine
 {
 private:
+	ModuleManager* mgr;
 	GameCore* game;
-	Pause* pause;
-	Font* font;
+	StartMenu* start;
+	GameOver* g_over;
+	//Pause* pause;
+	//Font* font;
 	Engine();
+
+	float w_height;
+	float w_width;
 	
 public:
-	ModuleManager* mgr;
-	Font* getFont(){return font;}
+	float getWidth(){return w_width;};
+	float getHeight(){return w_height;};
+
+	//Font* getFont(){return font;}
 	void keyPressed(int Key);
 	void keyReleased(int Key);
-	void mouse(int button, int state, int x, int y);
-	void mousePasive(int x, int y);
 	void play();
 	static Engine& Instance();
 	
-	//void reshape(int Width, int Height);
+	void reshape(float Width, float Height);
 };

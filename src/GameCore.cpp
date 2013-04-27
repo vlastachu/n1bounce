@@ -1,4 +1,8 @@
+#include <GL\GL.H>
 #include "GameCore.h"
+#include <time.h>
+
+
 GameCore::GameCore()
 {
 	g_map=new Map(this);
@@ -33,8 +37,10 @@ void GameCore::keyReleased(int Key)
 	_key=false;
 }
 
-void GameCore::Init()
+void GameCore::init(Module* Sender)
 {
+	srand(time(NULL));
+
 	xScaleAxis=HEIGHT*0.4; //def
 	yScaleAxis=HEIGHT;
 
@@ -48,7 +54,7 @@ void GameCore::Init()
 	man->init();
 }
 
-void GameCore::Clear()
+void GameCore::clear()
 {
 }
 
@@ -57,8 +63,18 @@ void GameCore::gameOver(const char* also){
 		_gameOver=true;
 }
 
-void GameCore::Run()
+void GameCore::run()
 {
+	
+	/*glBegin(GL_QUADS);
+		glColor3f(1,1,1);
+		glVertex2f(0,0);
+		glVertex2f(WIDTH,0);
+		glColor3f(0.1f,0.0f,0.1f);
+		glVertex2f(WIDTH,HEIGHT);
+		glVertex2f(0,HEIGHT);
+	glEnd();*/
+
 	man->move();
 	man->draw();
 	g_map->move();
@@ -68,16 +84,18 @@ void GameCore::Run()
 
 	score++;
 	string sScore = "Score: ";
-	char chScore[10]; itoa(score,chScore,10);
+	char chScore[10];
+	_itoa_s(score,chScore,10);
 	sScore+=chScore;
-	//Text::draw(sScore.c_str(),0.85,0.05,"gameinfo");
-	Graphics::outTextXY(HEIGHT*1.5,HEIGHT*0.05,25,25,sScore.c_str(),"../fonts/Ubuntu-m.ttf");
+
+	Graphics::outTextXY(WIDTH-300,10,20,20,sScore.c_str(),"dbg_font");
+
 	if(_gameOver)
-		Init();
+		mgr->setModule("g_over");
 	if(_pause)
 	{
 		_pause=false;
-		mgr->setModule("pause");
+		mgr->setModule("start");
 	}
 }
 

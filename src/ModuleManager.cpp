@@ -1,32 +1,43 @@
 #include "ModuleManager.h"
+#include <iostream>
 
 ModuleManager::ModuleManager()
 {
 	activeModule=NULL;
 }
 
-void ModuleManager::Register(string Name,Module* module)
+void ModuleManager::registrate(string Name,Module* module)
 {
 	modules.insert(std::pair<string,Module*>(Name,module));
 	modules.find(Name)->second->setManager(this);
 }
 
 
-void ModuleManager::Run()
+void ModuleManager::run()
 {
 	if(activeModule)
-		activeModule->Run();
+		activeModule->run();
 }
 
 void ModuleManager::setModule(string Name)
 {
-	
+	Module* sender=activeModule;
+	if(activeModule)
+		activeModule->clear();
 	map<string,Module*>::iterator it = modules.find(Name);
 	if(it!=modules.end())
-		activeModule=it->second;	
+	{
+		activeModule=it->second;
+		//std::cout<<activeModule;
+		if(activeModule)
+		{
+			std::cout<<Name;
+			activeModule->init(sender);
+		}
+	}
 }
 
-Module* ModuleManager::getModule(string Name)
+/*Module* ModuleManager::getModule(string Name)
 {
 	map<string,Module*>::iterator it = modules.find(Name);
 	if(it!=modules.end())
@@ -37,7 +48,7 @@ Module* ModuleManager::getModule(string Name)
 	{
 		return NULL;
 	}
-}
+}*/
 
 Module* ModuleManager::getActiveModule()
 {
