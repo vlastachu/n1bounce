@@ -11,6 +11,7 @@ FT_Library ft;
 FT_Face face;
 const char *fontfilename = "C:/Users/vlastachu/Documents/Carrington.ttf";
 GLuint      texture[10];  
+		float PI = 3.1415926;
 
 GLint uniform_mytexture;
 int setup() { 
@@ -23,34 +24,31 @@ int setup() {
 		return 0;
 	}
 	FT_Set_Pixel_Sizes(face, 0, 63);
-	//FT_Load_Char( face, 'O', FT_LOAD_RENDER );
-	//FT_GlyphSlot g = face->glyph;
-
-	//glGenTextures(1, &texture[0]);    // Create The Texture
-	//glBindTexture(GL_TEXTURE_2D, texture[0]);
- //   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR); // Linear Filtering
- //   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR); // Linear Filtering
-	////glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	//gluBuild2DMipmaps(GL_TEXTURE_2D,  GL_RGBA, g->bitmap.width, g->bitmap.rows,  GL_RED, GL_UNSIGNED_BYTE, g->bitmap.buffer);
 	return 1;
  }
 
-//void PutIntoTexture( FT_Bitmap* bmp, byte* td, int x, int y, int maxX, int maxY )
-//{
-//  int x0, y0, x1, y1;
-//  int x_max = x + bmp->width;
-//  int y_max = y + bmp->rows;
-//
-//  if ( x_max >= maxX ) x_max = maxX;
-//  if ( y_max >= maxY ) y_max = maxY;
-//  if ( x < 0 ) x = 0;
-//  if ( y < 0 ) y = 0;
-//  int len = x_max - x;
-//
-//
-//  for ( y0 = y, y1 = 0, x0 = y0*maxX, x1 = y1 * bmp->width; y0 < y_max; ++y0, ++y1, x0 += maxX, x1 += bmp->width )
-//    memcpy( td+(x0+x), bmp->buffer+x1, len );
-//}
+struct Color4f
+{
+	float red,green, blue, alpha;
+	Color4f(float r, float g, float b, float a):red(r),green(g),blue(b),alpha(a){}
+	Color4f():red(0),green(0),blue(0),alpha(0){}
+};
+
+void color(Color4f c)
+{
+	glColor4f(c.red,c.green,c.blue,c.alpha);
+}
+
+Color4f mixColors(Color4f a, Color4f b, float mix)
+{
+	return Color4f(a.red*mix + b.red*(1-mix),a.green*mix + b.green*(1-mix),a.blue*mix + b.blue*(1-mix),a.alpha*mix + b.alpha*(1-mix));
+}
+
+Color4f addColor(Color4f a, Color4f b, float mix)
+{
+		return Color4f(a.red*mix + a.red*b.red*(1-mix),a.green*mix + a.green*b.green*(1-mix),a.blue*mix + a.blue*b.blue*(1-mix),a.alpha*mix + a.alpha*b.alpha*(1-mix));
+}
+
 int strSize;
 GLuint tex;
 void makeTexture(){
@@ -85,8 +83,6 @@ void makeTexture(){
 					else
 						data[left + 64*(strSize*(row + 64 -  g->bitmap_top)) + b] = UCHAR_MAX;
 				}
-			//std::memcpy(data + left + 64*(strSize*(row + 64 -  g->bitmap_top))
-				//, g->bitmap.buffer + pitch * row, pitch);
 		}
 		left += g->advance.x >> 6;
 	}
@@ -94,15 +90,6 @@ void makeTexture(){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR_MIPMAP_LINEAR); // Linear Filtering
 	glColor4f(0.2,0.4,0.8,1.);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
-	/*glTexImage2D( GL_TEXTURE_2D, 
-              0, 
-              GL_RGBA, 
-              1024, 
-              128, 
-              0,  
-              GL_RED, 
-              GL_UNSIGNED_BYTE, 
-              data );*/
 	gluBuild2DMipmaps(
     GL_TEXTURE_2D, 
     GL_RGBA, 
@@ -112,35 +99,44 @@ void makeTexture(){
     GL_UNSIGNED_BYTE, 
     data
 );
-	
+	glDisable(GL_TEXTURE_2D);
 }
+
+class Fire{
+private:
+
+public:
+	static void drawRainbow(Color4f a, Color4f b,float x, float y, float r, float R, float rot)
+	{
+		float dx,dy;
+		glBegin(GL_TRIANGLE_STRIP);
+				for(float i = rot-PI; i <= rot; i+=PI/36)
+				{
+					color(mixColors(mixColors(a,b,i/(-PI)),Color4f(0,0,0,1),1));
+					dx = r*cos(i), dy = r*sin(i)*0.7;
+					glVertex2f(x + dx, y + dy);
+					color(mixColors(a,b,i/(-PI)));
+					dx = R*cos(i), dy = R*sin(i)*0.7;
+					glVertex2f(x + dx, y + dy);
+				}
+			glEnd();
+	}
+	static void draw(Color4f a, Color4f b,float x, float y, float r,float rot)
+	{
+		drawRainbow(mixColors(a,Color4f(1,0,0,1),0.5),mixColors(b,Color4f(1,0,0,1),0.5),x,y,r*3,r*4,rot);
+		drawRainbow(mixColors(a,Color4f(1,1,0,1),0.5),mixColors(b,Color4f(1,1,0,1),0.5),x,y,r*2,r*3,rot);
+		drawRainbow(mixColors(a,Color4f(0,0,0,1),0.5),mixColors(b,Color4f(0,0,0,1),0.5),x,y,r,r*2,rot);
+		drawRainbow(mixColors(a,Color4f(1,0,0,1),0.5),mixColors(a,Color4f(1,0,0,1),0.5),x,y,0,r,rot);
+	}
+};
+
 void display()
 {
 	glClearColor(1.0 ,1.0, 1.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-    //glLoadIdentity();//load identity matrix
-    	//glTexImage2D( GL_TEXTURE_2D, 
-  //            0, 
-  //            GL_RGBA, 
-  //            g->bitmap.width, 
-  //            g->bitmap.rows, 
-  //            0,  
-  //            GL_RED, 
-  //            GL_UNSIGNED_BYTE, 
-  //            g->bitmap.buffer );
-
-//gluBuild2DMipmaps(
-//    GL_TEXTURE_2D, 
-//    GL_RGBA, 
-//    64*strSize, 
-//    64*strSize, 
-//    GL_RED, 
-//    GL_UNSIGNED_BYTE, 
-//    data
-//);
-
-		float dx = 0.9, dy = 0.9, outline = 5,x = 20, y = 10, w = 32*85, h = 64;
+		float dx = 0.9, dy = 0.9, outline = 4,x = 20, y = 10, w = 32*85, h = 64;
+	   glEnable (GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D,tex);
 	glColor4f(0,0,0,1);
 		glBegin(GL_QUADS);
@@ -164,6 +160,19 @@ void display()
 		  glTexCoord2f(1.0f, 1.0f);glVertex2f(x + w,y + h); // bottom right
 		  glTexCoord2f(0.0f, 1.0f);glVertex2f(x ,y + h); //bottom left
 		glEnd();
+	glDisable(GL_TEXTURE_2D);
+	Color4f cur = Color4f(1,1,0.5,1);
+	Color4f prev = cur;
+	float width, left = 100;
+	for(int i =1; i <30;i++)
+	{
+		if(i<20) cur = mixColors(cur,Color4f(1,0,0,1),0.94);
+		else cur = mixColors(cur,Color4f(0,0,0,1),0.8);
+		width = 12.0-12.0/(1+0.07*i);
+		left += width*3; 
+		Fire::draw(cur,prev,left,200,width,PI*(i%2));
+		prev = cur;
+	}
 	//glActiveTexture(GL_TEXTURE0);
 	//glBindTexture(GL_TEXTURE_2D, texture[0]);               // Select Our Texture
     
@@ -178,7 +187,6 @@ void TimerFunction(int value)
 }
 int main(int argc, char *argv[])
 {
-	int i = 4%4;
        glutInit(&argc, argv);
        glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
        glutInitWindowSize(800,600);
@@ -188,8 +196,8 @@ int main(int argc, char *argv[])
 	   glEnable (GL_TEXTURE_2D);
 	   glEnable (GL_BLEND);
 	glOrtho (0, 800, 600, 0, -1, 1);
-glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
        setup();
 	   makeTexture();

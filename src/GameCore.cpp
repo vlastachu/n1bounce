@@ -71,7 +71,7 @@ void GameCore::Run()
 	char chScore[10]; itoa(score,chScore,10);
 	sScore+=chScore;
 	//Text::draw(sScore.c_str(),0.85,0.05,"gameinfo");
-	Graphics::outTextXY(HEIGHT*1.5,HEIGHT*0.05,25,25,sScore.c_str(),"../fonts/Ubuntu-m.ttf");
+	Graphics::outTextXY(HEIGHT*1.5,HEIGHT*0.05,129,129,sScore.c_str(),"../fonts/Ubuntu-m.ttf");
 	if(_gameOver)
 		Init();
 	if(_pause)
