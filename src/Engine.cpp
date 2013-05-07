@@ -1,6 +1,10 @@
 #include "Engine.h"
+
 Engine::Engine()
 {
+	w_width=1024;
+	w_height=480;
+
 	Graphics::addTexture(Graphics::png2tex("../data/ninja.png"),  "n_body");
 	Graphics::addTexture(Graphics::png2tex("../data/leg.png"),    "n_leg");
 	Graphics::addTexture(Graphics::png2tex("../data/katana.png"), "n_katana");
@@ -9,21 +13,18 @@ Engine::Engine()
 	Graphics::addTexture(Graphics::png2tex("../data/trap.png"), "trap");
 
 
-	//Text::addFontStyle("gameinfo","../fonts/Ubuntu-m.ttf",63,0,0,0,0.005,false,Color4f(0.3,0,0,1),0,0,Color4f(0,0,0,1),0.0005,Color4f(0.75,0.75,0.75,1));
-	Graphics::addFont("../fonts/Ubuntu-m.ttf");
-	/*
-	add background?
-	Background
-	*/
+	Graphics::addFont(Graphics::png2tex("../data/font.png"),16,16,0,"dbg_font");
 
 	mgr=new ModuleManager();
 	game=new GameCore();
-	pause=new Pause();
+	start=new StartMenu();
+	g_over=new GameOver();
 	
-	mgr->Register("game",game);
-	mgr->Register("pause",pause);
-	mgr->setModule("game");
-	game->Init();
+	mgr->registrate("game",game);
+	mgr->registrate("start",start);
+	mgr->registrate("g_over",g_over);
+	mgr->setModule("start");
+	//game->init();
 }
 
 Engine& Engine::Instance()
@@ -34,24 +35,12 @@ Engine& Engine::Instance()
 
 void Engine::play()
 {
-	mgr->Run();
+	mgr->run();
 }
 
-void Engine::keyPressed(int Key)
-{
-	mgr->getActiveModule()->keyPressed(Key);
-}
 
-void Engine::keyReleased(int Key)
+void Engine::reshape(float Width, float Height)
 {
-	mgr->getActiveModule()->keyReleased(Key);
-}
-
-void Engine::mouse(int button, int state, int x, int y)
-{
-	mgr->getActiveModule()->mouse(button, state, x, y);
-}
-void Engine::mousePasive(int x, int y)
-{
-	mgr->getActiveModule()->mousePasive(x, y);
+	w_width=Width;
+	w_height=Height;
 }

@@ -5,6 +5,8 @@
 class GameCore;
 class Ninja
 {
+	float dragX0,dragY0;
+
 	float dy,impulse;
 	int jmp;
 	

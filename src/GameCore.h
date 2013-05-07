@@ -2,6 +2,7 @@
 #include "Map.h"
 #include "Module.h"
 #include "Ninja.h"
+#include "Engine.h"
 
 class Map;
 class Ninja;
@@ -9,14 +10,18 @@ class GameCore:public Module
 {
 	Ninja* man;
 	Map* g_map;
+	enum GameState
+	{
+		GAME,PAUSE
+	}*gameState;
 	
-	int score;
 	bool _gameOver;
 	bool _pause;
 	bool _key;
 	
 	float yScaleAxis;
 public:
+	int score;
 	float xScaleAxis;//TODO: method
 	float toX(float X);
 	float toY(float Y);
@@ -27,9 +32,8 @@ public:
 	Ninja* getNinja(){return man;}
 	Map* getMap(){return g_map;}
 	GameCore();
-	virtual void keyPressed(int Key);
-	virtual void keyReleased(int Key);
-	virtual void Init();
-	virtual void Run();
-	virtual void Clear();
+
+	void init(Module* Sender);
+	void run();
+	void clear();
 };

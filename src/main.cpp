@@ -1,28 +1,40 @@
-#include <vector> // WTFFFFF??????????????
+#include <iostream> // WTFFFFF??????????????
 
 #include <GL\glut.h>
-#include <time.h>
 #include "Engine.h"
+#include "Events.h"
 
-#pragma comment(lib, "freetype.lib")
-#pragma comment(lib, "glut32.lib")
-#pragma comment(lib, "glu32.lib")
-#pragma comment(lib, "opengl32.lib")
 
 void reshape(int Width,int Height)
 {
+	glViewport(0,0,Width,Height);
+	Engine::Instance().reshape((float)Width,(float)Height);
 }
 
-void motion(int X,int Y)
+void motion(int x,int y)
 {
+	Events::instance().onMove(x,y);
 }
 
+void mouse(int button, int state, int x, int y)
+{
+	if(button==0 && state==0)
+	{
+		Events::instance().onPress(x,y);
+	}
+	else if(button==0 && state==1)
+	{
+		Events::instance().onRelease(x,y);
+	}
+	//std::cout<<Events::instance()._event<<"\n";
+}
 
 
 void TimerFunction(int value)
 {
 	glutTimerFunc(30,TimerFunction, 1);
-	Engine::Instance().play();
+	
+	Engine::Instance().play();Events::instance().onFrame();
     glutPostRedisplay();
     
 }
@@ -37,37 +49,30 @@ void display()
 
 void keyPressed(int Key,int,int) 
 {  
-	Engine::Instance().keyPressed(Key);
+	Events::instance().onRelease(Key);
 }
 
 void keyReleased(int Key,int,int)
 {
-	Engine::Instance().keyReleased(Key);
-}
-void mouse(int button, int state, int x, int y){
-	Engine::Instance().mouse(button, state, x, y);
+	
 }
 
-void mousePasive(int x, int y){
-	Engine::Instance().mousePasive(x, y);
-}
 
 
 int main (int argc, char * argv[])
 {
-	srand ( time(NULL) );
+	
 	glutInit(&argc, argv);
 
 	glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA);
-
-	glutInitWindowSize(WIDTH, HEIGHT);
+	glutInitWindowSize(1024, 480);
 	glutCreateWindow("Crysis");
-	glOrtho (0, WIDTH, HEIGHT, 0, -1, 1);
+	glOrtho (0, 1024, 480, 0, -1, 1);
 
 	glutDisplayFunc(display);
 	glutTimerFunc(30, TimerFunction, 1);
 	glutMouseFunc(mouse);
-	glutPassiveMotionFunc(motion);
+	glutMotionFunc(motion);
 	glutSpecialFunc(keyPressed);
 	glutSpecialUpFunc(keyReleased);
 	glutReshapeFunc(reshape);

@@ -8,7 +8,6 @@ Map::Map(GameCore* Root)
 
 void Map::draw()
 {
-	
 	for(std::list<MapShape*>::iterator it = elements.begin(); it != elements.end(); it++)
 	{
 		(*it)->draw();
@@ -34,8 +33,8 @@ void Map::move()
 
 	if(root->toX(lastPlat->x + lastPlat->w + HEIGHT/2) <= WIDTH)  //def
 	{
-		float deltaY=rand()%int(HEIGHT*0.5);  //def
-		float directionY=rand()%2;
+		int deltaY=rand()%int(HEIGHT*0.5);  //def //err div by zero
+		int directionY=rand()%2;
 		if(directionY==0) directionY=-1;
 		if(lastPlat->y+deltaY>HEIGHT*0.9)  //def
 		{
@@ -46,7 +45,7 @@ void Map::move()
 			directionY=1;
 		}
 		
-		Platform* p=new Platform(lastPlat->x+lastPlat->w+HEIGHT/2,lastPlat->y+directionY*deltaY,HEIGHT/2+rand()%int(HEIGHT),root);  //def
+		Platform* p=new Platform(lastPlat->x+lastPlat->w+HEIGHT/2,lastPlat->y+deltaY*directionY,HEIGHT/2+static_cast<float>(rand()%int(HEIGHT)),root);  //def
 		lastPlat=p;  //										|										|
 		elements.push_back(p);  //							<--------------different---------------->
 		if(!(rand()%4))
@@ -119,7 +118,7 @@ Trap* Platform::addTrap()
 
 DeathBall* Platform::addDB()
 {
-	return new DeathBall(x+w*0.5+rand()%int(w*0.25), y-HEIGHT*0.16-root->getNinja()->r*2*1.1, HEIGHT*0.16, root);  //def
+	return new DeathBall(x+w*0.5f+rand()%int(w*0.25f), y-HEIGHT*0.16f-root->getNinja()->r*2*1.1f, HEIGHT*0.16f, root);  //def
 }
 
 void Platform::draw()
@@ -147,8 +146,8 @@ void DeathBall::draw()
 	float _y=root->toY(y);
 	while(_y>0)
 	{
-		_y-=root->toL(HEIGHT*0.07);
-		Graphics::draw(0,0,1,1,root->toX(x),_y,root->toL(HEIGHT*0.07),root->toL(HEIGHT*0.07),0.5,0,0,"chain");
+		_y-=root->toL(HEIGHT*0.07f);//def
+		Graphics::draw(0,0,1,1,root->toX(x),_y,root->toL(HEIGHT*0.07f),root->toL(HEIGHT*0.07f),0.5f,0,0,"chain");//def
 	}
 	//Graphics::rectangle(root->toX(x-HEIGHT*0.02),0,root->toL(HEIGHT*0.04),root->toY(y));  //def
 	Graphics::draw(0,0,1,1,root->toX(x),root->toY(y),root->toL(2*r),root->toL(2*r),0.5,0.5,0,"db");

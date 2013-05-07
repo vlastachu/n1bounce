@@ -1,15 +1,76 @@
+#include <GL\GL.H>
 #include "GameCore.h"
+#include <time.h>
+#include "Events.h"
+
+
 GameCore::GameCore()
 {
 	g_map=new Map(this);
 	man=new Ninja(this);
+	gameState=new GameState(GAME);
 }
 
-void GameCore::keyPressed(int Key)
+void GameCore::init(Module* Sender)
 {
-	if(!_key)
+	srand(time(NULL));
+
+	xScaleAxis=HEIGHT*0.4; //def
+	yScaleAxis=HEIGHT;
+
+	scale=1;
+	score = 0;
+	speed = HEIGHT/40;  //def
+	_gameOver=false;
+	_pause=false;
+	_key=false;
+	g_map->init();
+	man->init();
+
+	*gameState=GAME;
+}
+
+void GameCore::clear()
+{
+}
+
+void GameCore::gameOver(const char* also){
+		//std::cout << "GAME OVER! Try again." << also << "\n";
+		_gameOver=true;
+}
+
+void GameCore::run()
+{
+	
+	/*glBegin(GL_QUADS);
+		glColor3f(1,1,1);
+		glVertex2f(0,0);
+		glVertex2f(WIDTH,0);
+		glColor3f(0.1f,0.0f,0.1f);
+		glVertex2f(WIDTH,HEIGHT);
+		glVertex2f(0,HEIGHT);
+	glEnd();*/
+	Graphics::color(0,0,0);
+	Graphics::rectangle(20,20,30,30);
+
+	if(Events::instance().mouseEvent==Events::CLICK)
 	{
-		switch(Key)
+		
+		float x=Events::instance().x;
+		float y=Events::instance().y;
+		if(x>20 && x<50 && y>20 && y<50)
+		{
+			Events::instance().reset();
+			if(*gameState==GAME)
+				*gameState=PAUSE;
+			else
+				*gameState=GAME;
+		}
+	}
+
+	if(Events::instance().kbdEvent==Events::RELEASE)
+	{
+		switch(Events::instance().key)
 		{
 		case KEY_UP:
 			man->jump();
@@ -24,60 +85,38 @@ void GameCore::keyPressed(int Key)
 			_pause=true;
 			break;
 		}
-		_key=true;
 	}
-}
 
-void GameCore::keyReleased(int Key)
-{
-	_key=false;
-}
 
-void GameCore::Init()
-{
-	xScaleAxis=HEIGHT*0.4; //def
-	yScaleAxis=HEIGHT;
+	if(*gameState==GAME)
+	{
+		man->move();
+		g_map->move();
+	}
 
-	scale=1;
-	score = 0;
-	speed = HEIGHT/40;  //def
-	_gameOver=false;
-	_pause=false;
-	_key=false;
-	g_map->init();
-	man->init();
-}
-
-void GameCore::Clear()
-{
-}
-
-void GameCore::gameOver(const char* also){
-		//std::cout << "GAME OVER! Try again." << also << "\n";
-		_gameOver=true;
-}
-
-void GameCore::Run()
-{
-	man->move();
 	man->draw();
-	g_map->move();
 	g_map->draw();
-	
-	scale=1-(yScaleAxis-man->y)/(HEIGHT * 3);  //TODO: exp() function or smth like that
 
-	score++;
+	if(*gameState==GAME)
+	{
+		scale=1-(yScaleAxis-man->y)/(HEIGHT * 3);  //TODO: exp() function or smth like that
+
+		score++;
+	}
+
 	string sScore = "Score: ";
-	char chScore[10]; itoa(score,chScore,10);
+	char chScore[10];
+	_itoa_s(score,chScore,10);
 	sScore+=chScore;
-	//Text::draw(sScore.c_str(),0.85,0.05,"gameinfo");
-	Graphics::outTextXY(HEIGHT*1.5,HEIGHT*0.05,129,129,sScore.c_str(),"../fonts/Ubuntu-m.ttf");
+	
+
+	Graphics::outTextXY(WIDTH-300,10,20,20,sScore.c_str(),"dbg_font");
 	if(_gameOver)
-		Init();
+		mgr->setModule("g_over");
 	if(_pause)
 	{
 		_pause=false;
-		mgr->setModule("pause");
+		mgr->setModule("start");
 	}
 }
 
