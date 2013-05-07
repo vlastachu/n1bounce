@@ -10,7 +10,10 @@ class GameCore:public Module
 {
 	Ninja* man;
 	Map* g_map;
-	
+	enum GameState
+	{
+		GAME,PAUSE
+	}*gameState;
 	
 	bool _gameOver;
 	bool _pause;
@@ -30,8 +33,6 @@ public:
 	Map* getMap(){return g_map;}
 	GameCore();
 
-	void keyPressed(int Key);
-	void keyReleased(int Key);
 	void init(Module* Sender);
 	void run();
 	void clear();

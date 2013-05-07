@@ -14,6 +14,6 @@ public:
 	virtual void init(Module* Sender){}
 	virtual void run(){}
 	virtual void clear(){}
-	virtual void keyPressed(int Key){}
-	virtual void keyReleased(int Key){}
+	//virtual void keyPressed(int Key){}
+	//virtual void keyReleased(int Key){}
 };

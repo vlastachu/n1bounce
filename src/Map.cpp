@@ -8,7 +8,6 @@ Map::Map(GameCore* Root)
 
 void Map::draw()
 {
-	
 	for(std::list<MapShape*>::iterator it = elements.begin(); it != elements.end(); it++)
 	{
 		(*it)->draw();

@@ -11,11 +11,4 @@ public:
 	void init(Module* Sender);
 	void run();
 	void clear(){}
-	void keyPressed(int Key)
-	{
-		mgr->setModule("game");
-	}
-	void keyReleased(int Key)
-	{		
-	}
 };

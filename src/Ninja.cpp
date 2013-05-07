@@ -1,5 +1,7 @@
 #include "Ninja.h"
 #include "Engine.h"
+#include "Events.h"
+#include <iostream>
 	
 Ninja::Ninja(GameCore* Parent)
 {
@@ -49,6 +51,24 @@ void Ninja::draw()
 
 void Ninja::move()
 {
+	switch(Events::instance().mouseEvent)
+	{
+	case Events::CLICK:
+		jump();
+		break;
+	case Events::PRESS:
+		dragX0=Events::instance().x;
+		dragY0=Events::instance().y;
+		break;
+	case Events::RELEASE:
+		float _x=Events::instance().x;
+		float _y=Events::instance().y;
+		if(_y>dragY0/* && abs(_x-dragX0)<10*/)
+			slide();
+		break;
+	}
+
+
 	if(y >= HEIGHT*2) //TODO: NICER!!
 	{
 		parent->gameOver("deadline");

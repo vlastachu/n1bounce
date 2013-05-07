@@ -24,8 +24,6 @@ public:
 	float getHeight(){return w_height;};
 
 	//Font* getFont(){return font;}
-	void keyPressed(int Key);
-	void keyReleased(int Key);
 	void play();
 	static Engine& Instance();
 	

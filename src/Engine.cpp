@@ -38,15 +38,6 @@ void Engine::play()
 	mgr->run();
 }
 
-void Engine::keyPressed(int Key)
-{
-	mgr->getActiveModule()->keyPressed(Key);
-}
-
-void Engine::keyReleased(int Key)
-{
-	mgr->getActiveModule()->keyReleased(Key);
-}
 
 void Engine::reshape(float Width, float Height)
 {
