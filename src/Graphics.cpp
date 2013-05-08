@@ -2,7 +2,10 @@
 #include <GL/glu.h>
 #include "lodepng.h"
 #include "Graphics.h"
-
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <algorithm>
 void Graphics::color(float R,float G,float B)
 {
 	glColor3f(R,G,B);
@@ -99,44 +102,126 @@ void Graphics::addTexture(unsigned TextureId,string TextureName)
 	textures.insert(std::pair<string,unsigned>(TextureName,TextureId));
 }
 
-void Graphics::outCharXY(float X,float Y,float W,float H,char C,string FontName)
-{
-	map<string,Font>::iterator it=fonts.find(FontName);
-	if(it==fonts.end()) return;
-	float x1=((C-it->second.startChar)%it->second.xNum)/(float)it->second.xNum;
-	float y1=((C-it->second.startChar)/it->second.xNum)/(float)it->second.yNum;
-	float x2=x1+1/(float)it->second.xNum;
-	float y2=y1+1/(float)it->second.yNum;
-
-	glEnable( GL_TEXTURE_2D );
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glBindTexture( GL_TEXTURE_2D, it->second.texture);
-
-	glColor3f(1.0,1.0,1.0);
-	glBegin( GL_QUADS );
-		glTexCoord2f(x1,y1); glVertex2f(X,Y);
-		glTexCoord2f(x1,y2); glVertex2f(X,Y+H);
-		glTexCoord2f(x2,y2); glVertex2f(X+W,Y+H);
-		glTexCoord2f(x2,y1); glVertex2f(X+W,Y);
-	glEnd();
-
-	glDisable(GL_BLEND);
-	glDisable(GL_TEXTURE_2D);
-
-	//draw(x1,y1,x2,y2,X,Y,W,H,0,0,0,it->second.texture);
+std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
+    std::stringstream ss(s);
+    std::string item;
+    while (std::getline(ss, item, delim)) {
+        elems.push_back(item);
+    }
+    return elems;
 }
 
-void Graphics::outTextXY(float X,float Y,float CharW,float CharH,const char* Str,string FontName)
-{
-	for(int i=0;Str[i]!='\0';i++)
-		outCharXY(X+CharW*i,Y,CharW,CharH,Str[i],FontName);
+
+std::vector<std::string> split(const std::string &s, char delim) {
+    std::vector<std::string> elems;
+    split(s, delim, elems);
+    return elems;
 }
 
-void Graphics::addFont(unsigned TextureId,int XNum,int YNum,int StartChar,string FontName)
-{
-	fonts.insert(std::pair<string,Font>(FontName,Font(TextureId,XNum,YNum,StartChar)));
+//file name without folder and extension
+//font file names format: font~lucide.png, font~lucide.fnt
+//in code Font::findByName("lucide")->draw(...)
+void Graphics::loadAtlas(string fileName){
+	std::ifstream atlasFile("../data/atlases/" + fileName + ".atlas");
+	if(!atlasFile.is_open()){
+		std::cout << "no such file " << fileName;
+		return;
+	}
+	unsigned char* data;
+	unsigned atlasW, atlasH;
+	unsigned atlasId;
+	lodepng_decode32_file(&data, &atlasW, &atlasH, ("../data/atlases/" + fileName + ".png").c_str());
+	glGenTextures(1,&atlasId);
+	glBindTexture(GL_TEXTURE_2D,atlasId);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, atlasW, atlasH, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	delete data;
+	string out; 
+	std::ifstream text; 
+	std::vector<string> str, fontStr;
+	while(!atlasFile.eof()){
+		atlasFile >> out;
+		str = split(out,' ');
+		if(split(str.at(0),'~').at(0) == "font"){
+			Font* font = new Font(atlasId, split(split(str.at(0),'~').at(1),'.').at(0), atlasH, atlasW, atoi(str.at(1).c_str()),
+				atoi(str.at(2).c_str()),atoi(str.at(3).c_str()), atoi(str.at(4).c_str()), atoi(str.at(5).c_str()), atoi(str.at(6).c_str()));
+			text.open("../data/atlases/" + split(str.at(0),'_').at(0) + ".fnt");
+			if(!text.is_open()){
+				std::cout << "no such file " << str.at(0);
+				return;
+			}
+			text >> out; 
+			std::vector<string> title = split(out, ' ');
+			string fontSize;
+			for(std::vector<string>::iterator it = title.begin(); it != title.end(); it++)
+				if(split(*it, '=').at(0) == "size"){
+					fontSize = split(*it, '=').at(1);
+					break;
+				}
+			font->setFontSize(atoi(fontSize.c_str()));
+			while(!text.eof()){
+				text >> out;
+				fontStr = split(out, ' ');
+				//M-M-MAXIMUM BYDLOCODE
+				//можно красивее распарсить конечно. ну или сделать функцию чтобы меньше копипасты было
+				if(str.at(0) == "char"){
+					Font::Char* t = new Font::Char();
+					t->x = atoi(split(str.at(2),'=').at(1).c_str());
+					t->y = atoi(split(str.at(3),'=').at(1).c_str());
+					t->width = atoi(split(str.at(4),'=').at(1).c_str());
+					t->height = atoi(split(str.at(5),'=').at(1).c_str());
+					t->xoffset = atoi(split(str.at(6),'=').at(1).c_str());
+					t->yoffset = atoi(split(str.at(7),'=').at(1).c_str());					
+					font->pushChar(atoi(split(str.at(1),'=').at(1).c_str()), t);
+				}
+			}
+			text.close();
+		}
+		else 
+			new Texture(atlasId, split(str.at(0),'.').at(0), atlasH, atlasW, atoi(str.at(1).c_str()), atoi(str.at(2).c_str()),atoi(str.at(3).c_str()), atoi(str.at(4).c_str()), atoi(str.at(5).c_str()), atoi(str.at(6).c_str()));
+	}
+	atlasFile.close();
 }
+
+//void Graphics::outCharXY(float X,float Y,float W,float H,char C,string FontName)
+//{
+//	map<string,Font>::iterator it=fonts.find(FontName);
+//	if(it==fonts.end()) return;
+//	float x1=((C-it->second.startChar)%it->second.xNum)/(float)it->second.xNum;
+//	float y1=((C-it->second.startChar)/it->second.xNum)/(float)it->second.yNum;
+//	float x2=x1+1/(float)it->second.xNum;
+//	float y2=y1+1/(float)it->second.yNum;
+//
+//	glEnable( GL_TEXTURE_2D );
+//	glEnable(GL_BLEND);
+//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//	glBindTexture( GL_TEXTURE_2D, it->second.texture);
+//
+//	glColor3f(1.0,1.0,1.0);
+//	glBegin( GL_QUADS );
+//		glTexCoord2f(x1,y1); glVertex2f(X,Y);
+//		glTexCoord2f(x1,y2); glVertex2f(X,Y+H);
+//		glTexCoord2f(x2,y2); glVertex2f(X+W,Y+H);
+//		glTexCoord2f(x2,y1); glVertex2f(X+W,Y);
+//	glEnd();
+//
+//	glDisable(GL_BLEND);
+//	glDisable(GL_TEXTURE_2D);
+//
+//	//draw(x1,y1,x2,y2,X,Y,W,H,0,0,0,it->second.texture);
+//}
+//
+//void Graphics::outTextXY(float X,float Y,float CharW,float CharH,const char* Str,string FontName)
+//{
+//	for(int i=0;Str[i]!='\0';i++)
+//		outCharXY(X+CharW*i,Y,CharW,CharH,Str[i],FontName);
+//}
+//
+//void Graphics::addFont(unsigned TextureId,int XNum,int YNum,int StartChar,string FontName)
+//{
+//	fonts.insert(std::pair<string,Font>(FontName,Font(TextureId,XNum,YNum,StartChar)));
+//}
 
 
 
