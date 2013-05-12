@@ -12,9 +12,10 @@ void GameOver::run()
 	
 	Graphics::color(0.5,0.5,0.5);
 	Graphics::rectangle(WIDTH*0.25f,HEIGHT*0.25f,WIDTH*0.5f,HEIGHT*0.5f);
-	Graphics::outTextXY(WIDTH*0.35f,HEIGHT*0.4f,64,64,"GameOver","dbg_font");
-	Graphics::outTextXY(WIDTH*0.35f,HEIGHT*0.5f,64,64,chScore,"dbg_font");
-
+	//Graphics::outTextXY(WIDTH*0.35f,HEIGHT*0.4f,64,64,"GameOver","dbg_font");
+	//Graphics::outTextXY(WIDTH*0.35f,HEIGHT*0.5f,64,64,chScore,"dbg_font");
+	Font::findByName("std")->draw("GameOver",WIDTH*0.35f,HEIGHT*0.4f, 64, 0, 0, 0);//TODO: find once and use pointer to draw
+	Font::findByName("std")->draw(chScore,WIDTH*0.35f,HEIGHT*0.5f, 64, 0, 0, 0);//TODO: find once and use pointer to draw
 	if(Events::instance().kbdEvent==Events::RELEASE)
 	{
 		mgr->setModule("game");

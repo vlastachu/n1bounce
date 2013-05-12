@@ -96,7 +96,7 @@ Trap::Trap(float X,float Y,GameCore* Root):MapShape(X,Y,HEIGHT*0.2,HEIGHT*0.2,Ro
 
 void Trap::draw()
 {
-	Graphics::draw(0,0,1,1,root->toX(x),root->toY(y),root->toL(h),root->toL(h),0,1,0,"trap");
+	Texture::findByName("trap")->draw(root->toX(x),root->toY(y),root->toL(h),root->toL(h),0,1,0);//TODO save pointer
 }
 
 void Trap::move()
@@ -147,10 +147,13 @@ void DeathBall::draw()
 	while(_y>0)
 	{
 		_y-=root->toL(HEIGHT*0.07f);//def
-		Graphics::draw(0,0,1,1,root->toX(x),_y,root->toL(HEIGHT*0.07f),root->toL(HEIGHT*0.07f),0.5f,0,0,"chain");//def
+		//Graphics::draw(0,0,1,1,root->toX(x),_y,root->toL(HEIGHT*0.07f),root->toL(HEIGHT*0.07f),0.5f,0,0,"chain");//def
+		Texture::findByName("chain")->draw(root->toX(x),_y,root->toL(HEIGHT*0.07f),root->toL(HEIGHT*0.07f),0.5f,0,0);//TODO save pointer
+		
 	}
 	//Graphics::rectangle(root->toX(x-HEIGHT*0.02),0,root->toL(HEIGHT*0.04),root->toY(y));  //def
-	Graphics::draw(0,0,1,1,root->toX(x),root->toY(y),root->toL(2*r),root->toL(2*r),0.5,0.5,0,"db");
+	//Graphics::draw(0,0,1,1,root->toX(x),root->toY(y),root->toL(2*r),root->toL(2*r),0.5,0.5,0,"db");
+	Texture::findByName("db")->draw(root->toX(x),root->toY(y),root->toL(2*r),root->toL(2*r),0.5,0.5,0);//TODO save pointer
 	//Graphics::circle(root->toX(x),root->toY(y),root->toL(r));
 }
 

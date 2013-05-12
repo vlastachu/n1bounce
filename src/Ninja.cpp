@@ -43,10 +43,15 @@ void Ninja::draw()
 {
 	//Graphics::circle(x,y-r,r);
 	
-	Graphics::draw(0,0,1,1, parent->toX(leg1.x+x)   , parent->toY(leg1.y+y)   , parent->toL(leg1.w)   , parent->toL(leg1.h)   ,0.5,0.5,   leg1.rot   , "n_leg");
+	/*Graphics::draw(0,0,1,1, parent->toX(leg1.x+x)   , parent->toY(leg1.y+y)   , parent->toL(leg1.w)   , parent->toL(leg1.h)   ,0.5,0.5,   leg1.rot   , "n_leg");
 	Graphics::draw(0,0,1,1, parent->toX(body.x+x)   , parent->toY(body.y+y)   , parent->toL(body.w)   , parent->toL(body.h)   ,0.5,0.5,   body.rot   , "n_body");
 	Graphics::draw(0,0,1,1, parent->toX(katana.x+x) , parent->toY(katana.y+y) , parent->toL(katana.w) , parent->toL(katana.h) ,0.5,0.5, katana.rot   , "n_katana");
 	Graphics::draw(0,0,1,1, parent->toX(leg2.x+x)   , parent->toY(leg2.y+y)   , parent->toL(leg2.w)   , parent->toL(leg2.h)   ,0.5,0.5,   leg2.rot   , "n_leg");
+	*/
+	Texture::findByName("n_leg")->draw(parent->toX(leg1.x+x)   , parent->toY(leg1.y+y)   , parent->toL(leg1.w)   , parent->toL(leg1.h)   ,0.5,0.5,   leg1.rot);//TODO save pointer
+	Texture::findByName("n_body")->draw(parent->toX(body.x+x)   , parent->toY(body.y+y)   , parent->toL(body.w)   , parent->toL(body.h)   ,0.5,0.5,   body.rot);//TODO save pointer
+	Texture::findByName("n_katana")->draw(parent->toX(katana.x+x) , parent->toY(katana.y+y) , parent->toL(katana.w) , parent->toL(katana.h) ,0.5,0.5, katana.rot);//TODO save pointer
+	Texture::findByName("n_leg")->draw(parent->toX(leg2.x+x)   , parent->toY(leg2.y+y)   , parent->toL(leg2.w)   , parent->toL(leg2.h)   ,0.5,0.5,   leg2.rot);//TODO save pointer
 }
 
 void Ninja::move()

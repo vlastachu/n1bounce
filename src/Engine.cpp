@@ -4,17 +4,8 @@ Engine::Engine()
 {
 	w_width=1024;
 	w_height=480;
-
-	Graphics::addTexture(Graphics::png2tex("../data/ninja.png"),  "n_body");
-	Graphics::addTexture(Graphics::png2tex("../data/leg.png"),    "n_leg");
-	Graphics::addTexture(Graphics::png2tex("../data/katana.png"), "n_katana");
-	Graphics::addTexture(Graphics::png2tex("../data/db.png"), "db");
-	Graphics::addTexture(Graphics::png2tex("../data/chain.png"), "chain");
-	Graphics::addTexture(Graphics::png2tex("../data/trap.png"), "trap");
-
-
-	Graphics::addFont(Graphics::png2tex("../data/font.png"),16,16,0,"dbg_font");
-
+	Graphics::loadAtlas("atlas");
+	
 	mgr=new ModuleManager();
 	game=new GameCore();
 	start=new StartMenu();

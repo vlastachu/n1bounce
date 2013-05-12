@@ -110,7 +110,8 @@ void GameCore::run()
 	sScore+=chScore;
 	
 
-	Graphics::outTextXY(WIDTH-300,10,20,20,sScore.c_str(),"dbg_font");
+	//Graphics::outTextXY(WIDTH-300,10,20,20,sScore.c_str(),"dbg_font");
+	Font::findByName("std")->draw(sScore.c_str(),WIDTH-300,10,20, 0, 0, 0);//TODO: find once and use pointer to draw
 	if(_gameOver)
 		mgr->setModule("g_over");
 	if(_pause)
