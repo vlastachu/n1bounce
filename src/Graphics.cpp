@@ -159,7 +159,7 @@ void Graphics::loadAtlas(string fileName){
 	std::vector<string> str, fontStr;
 	std::getline(atlasFile, out);
 	while(std::getline(atlasFile, out)){
-		str = split(out,' ');
+		str = split(out,'\t');
 		if(split(str.at(0),'~').at(0) == "font"){
 			Font* font = new Font(atlasId, split(split(str.at(0),'~').at(1),'.').at(0), atlasH, atlasW, atoi(str.at(1).c_str()),
 				atoi(str.at(2).c_str()),atoi(str.at(3).c_str()), atoi(str.at(4).c_str()), atoi(str.at(5).c_str()), 
@@ -281,12 +281,13 @@ void Graphics::loadAtlas(string fileName){
 		chars.insert(std::pair<char, Char*>(cName, ch));
 	}
 	float Font::draw(char c,float x, float y, float height, float x0, float y0, float rot){
+		if(c == ' ') return height;
 		map<char, Char*>::iterator it = chars.find(c);
 		Graphics::logIf(it == chars.end(), "Font::draw char not found");
 		Char* ch = it->second;
 		drawInner(x + ch->xoffset*height/fontSize, y + ch->yoffset*height/fontSize, ch->width*height/fontSize, ch->height*height/fontSize, x0, y0, rot, 
 			ch->x, ch->y, (float)ch->width/(float)pxWidth, (float)ch->height/(float)pxHeight);
-		return (ch->xoffset + ch->width + ch->xadvance)*height/fontSize; // + somespace
+		return (ch->xoffset + ch->width + ch->xadvance + 1)*height/fontSize; // + somespace
 	}
 	void Font::draw(string str,float x, float y, float height, float x0, float y0, float rot){
 		unsigned xOffset = 0;
