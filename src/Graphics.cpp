@@ -120,6 +120,7 @@ std::vector<std::string> split(const std::string &s, char delim) {
 }
 
 
+
 	void Graphics::log(string str){
 		//изначально я пытался воспользоваться многточием... но это кошмар
 		std::cout << str << "\n";
@@ -137,6 +138,9 @@ std::vector<std::string> split(const std::string &s, char delim) {
 		}
 	}
 
+	map<string, Texture*> Texture::textures;
+	map<string, Font*> Font::fonts;
+
 void Graphics::loadAtlas(string fileName){
 	std::ifstream atlasFile("../data/atlas/" + fileName + ".atlas");
 	logIf(!atlasFile.is_open(), "Graphics::loadAtlas no such file ../data/atlas/" + fileName + ".atlas");
@@ -153,13 +157,13 @@ void Graphics::loadAtlas(string fileName){
 	delete data;
 	string out; 
 	std::vector<string> str, fontStr;
-	while(!atlasFile.eof()){
-		atlasFile >> out;
+	std::getline(atlasFile, out);
+	while(std::getline(atlasFile, out)){
 		str = split(out,' ');
 		if(split(str.at(0),'~').at(0) == "font"){
 			Font* font = new Font(atlasId, split(split(str.at(0),'~').at(1),'.').at(0), atlasH, atlasW, atoi(str.at(1).c_str()),
 				atoi(str.at(2).c_str()),atoi(str.at(3).c_str()), atoi(str.at(4).c_str()), atoi(str.at(5).c_str()), 
-				atoi(str.at(6).c_str()),  "../data/font/" + split(str.at(0),'_').at(0) + ".fnt");
+				atoi(str.at(6).c_str()),  "../data/font/" + split(str.at(0),'.').at(0) + ".fnt");
 		}
 		else 
 			new Texture(atlasId, split(str.at(0),'.').at(0), atlasH, atlasW, atoi(str.at(1).c_str()), atoi(str.at(2).c_str()),atoi(str.at(3).c_str()), atoi(str.at(4).c_str()), atoi(str.at(5).c_str()), atoi(str.at(6).c_str()));
@@ -167,11 +171,11 @@ void Graphics::loadAtlas(string fileName){
 	atlasFile.close();
 }
 
-	void Texture::drawInner(float x, float y, float width, float height, float x0, float y0, float rot, int xOffset, int yOffset, int innerWidth, int innerHeight){	
-		float texX1 = this->posX + (xOffset/(float)pxWidth);
-		float texY1 = this->posY + (yOffset/(float)pxHeight);
-		float texX2 = texX1 + this->width*(innerWidth/(float)pxWidth);
-		float texY2 = texY1 + this->height*(innerHeight/(float)pxHeight);
+	void Texture::drawInner(float x, float y, float width, float height, float x0, float y0, float rot, int xOffset, int yOffset, float innerWidth, float innerHeight){	
+		float texX1 = this->posX + (xOffset/(float)pxWidth)*this->width;
+		float texY1 = this->posY + (yOffset/(float)pxHeight)*this->height;
+		float texX2 = texX1 + this->width*(innerWidth);
+		float texY2 = texY1 + this->height*(innerHeight);
 		x += shiftX;
 		y += shiftY;
 		glEnable( GL_TEXTURE_2D );
@@ -213,7 +217,7 @@ void Graphics::loadAtlas(string fileName){
 
 	Texture* Texture::findByName(string Name){
 		map<string, Texture*>::iterator it = textures.find(Name);
-		Graphics::logIf(it == textures.end(), "Texture::findByName texture not found");
+		Graphics::logIf(it == textures.end(), "Texture::findByName texture not found:" + Name);
 		return it->second;
 	}
 
@@ -238,8 +242,8 @@ void Graphics::loadAtlas(string fileName){
 		shiftY = ShiftY/(float)AtlasHeight;
 		fonts.insert(std::pair<string, Font*>(Name, this));
 		text.open(fontFileName);
-		Graphics::logIf(!text.is_open(), "no such file " + fontFileName);
-		text >> out; 
+		Graphics::logIf(!text.is_open(), "Font::Font no such file " + fontFileName);
+		std::getline(text, out);
 		std::vector<string> title = split(out, ' ');
 		string strFontSize;
 		for(std::vector<string>::iterator it = title.begin(); it != title.end(); it++)
@@ -248,8 +252,7 @@ void Graphics::loadAtlas(string fileName){
 				break;
 			}
 		fontSize = atoi(strFontSize.c_str());
-		while(!text.eof()){
-			text >> out;
+		while(std::getline(text, out)){
 			str = split(out, ' ');
 			//M-M-MAXIMUM BYDLOCODE
 			//можно красивее распарсить конечно. ну или сделать функцию чтобы меньше копипасты было
@@ -281,7 +284,8 @@ void Graphics::loadAtlas(string fileName){
 		map<char, Char*>::iterator it = chars.find(c);
 		Graphics::logIf(it == chars.end(), "Font::draw char not found");
 		Char* ch = it->second;
-		drawInner(x + ch->xoffset*height/fontSize, y + ch->yoffset*height/fontSize, ch->width*height/fontSize, ch->height*height/fontSize, x0, y0, rot, ch->x, ch->y, ch->width, ch->height);
+		drawInner(x + ch->xoffset*height/fontSize, y + ch->yoffset*height/fontSize, ch->width*height/fontSize, ch->height*height/fontSize, x0, y0, rot, 
+			ch->x, ch->y, (float)ch->width/(float)pxWidth, (float)ch->height/(float)pxHeight);
 		return (ch->xoffset + ch->width + ch->xadvance)*height/fontSize; // + somespace
 	}
 	void Font::draw(string str,float x, float y, float height, float x0, float y0, float rot){

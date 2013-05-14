@@ -26,7 +26,8 @@ protected:
 	int pxWidth, pxHeight;
 	static map<string, Texture*> textures;
 	string name;
-	void drawInner(float x, float y, float width, float height, float x0, float y0, float rot, int xOffset, int yOffset, int innerWidth, int innerHeight);
+	void drawInner(float x, float y, float width, float height, float x0, float y0, float rot, int xOffset, int yOffset, float innerWidth, float innerHeight);
+	Texture(){}
 public:
 	Texture(unsigned AtlasId, string Name, int AtlasHeight, int AtlasWidth, int PosX, int PosY, int Width, int Height, int ShiftX, int ShiftY);
 	static Texture* findByName(string Name);

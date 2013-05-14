@@ -3,8 +3,8 @@
 #include <map>
 #include <string>
 
-#define string std::string
-#define map std::map
+using std::string;
+using std::map;
 class Module;
 class ModuleManager
 {
