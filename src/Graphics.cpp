@@ -172,12 +172,14 @@ void Graphics::loadAtlas(string fileName){
 }
 
 	void Texture::drawInner(float x, float y, float width, float height, float x0, float y0, float rot, int xOffset, int yOffset, float innerWidth, float innerHeight){	
-		float texX1 = this->posX + (xOffset/(float)pxWidth)*this->width;
-		float texY1 = this->posY + (yOffset/(float)pxHeight)*this->height;
+		float texX1 = this->posX + ((xOffset)/(float)pxWidth)*this->width;
+		float texY1 = this->posY + ((yOffset)/(float)pxHeight)*this->height;
 		float texX2 = texX1 + this->width*(innerWidth);
 		float texY2 = texY1 + this->height*(innerHeight);
-		x += shiftX;
-		y += shiftY;
+		//x += shiftX*width;
+		//y += shiftY*height;
+		width -= shiftX*width;
+		height -= shiftY*height;
 		glEnable( GL_TEXTURE_2D );
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -210,14 +212,14 @@ void Graphics::loadAtlas(string fileName){
 		height = Height/(float)AtlasHeight;
 		pxWidth = Width;
 		pxHeight = Height;
-		shiftX = ShiftX/(float)AtlasWidth;
-		shiftY = ShiftY/(float)AtlasHeight;
+		shiftX = ShiftX/(float)Width;
+		shiftY = ShiftY/(float)Height;
 		textures.insert(std::pair<string, Texture*>(Name, this));
 	}
 
 	Texture* Texture::findByName(string Name){
 		map<string, Texture*>::iterator it = textures.find(Name);
-		Graphics::logIf(it == textures.end(), "Texture::findByName texture not found:" + Name);
+		Graphics::logIf(it == textures.end(), "Texture::findByName texture not found: " + Name);
 		return it->second;
 	}
 
@@ -238,8 +240,8 @@ void Graphics::loadAtlas(string fileName){
 		height = Height/(float)AtlasHeight;
 		pxWidth = Width;
 		pxHeight = Height;
-		shiftX = ShiftX/(float)AtlasWidth;
-		shiftY = ShiftY/(float)AtlasHeight;
+		shiftX = ShiftX/(float)Width;
+		shiftY = ShiftY/(float)Height;
 		fonts.insert(std::pair<string, Font*>(Name, this));
 		text.open(fontFileName);
 		Graphics::logIf(!text.is_open(), "Font::Font no such file " + fontFileName);
